@@ -1,0 +1,288 @@
+import 'package:flutter/material.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../models/ad_slot_model.dart';
+
+class AdSlotCard extends StatelessWidget {
+  final AdSlot   slot;
+  final VoidCallback onTap;
+
+  const AdSlotCard({super.key, required this.slot, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme  = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: slot.isAvailable ? onTap : null,
+      child: Container(
+        margin:      const EdgeInsets.only(bottom: 16),
+        decoration:  BoxDecoration(
+          color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color:      isDark
+                  ? Colors.black.withOpacity(0.3)
+                  : AppColors.primaryPurple.withOpacity(0.08),
+              blurRadius: 16,
+              offset:     const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Slot Image ─────────────────────────────────────────────
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              child: Stack(
+                children: [
+                  Image.network(
+                    slot.imageUrl,
+                    height:     180,
+                    width:      double.infinity,
+                    fit:        BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 180,
+                      color:  isDark
+                          ? AppColors.darkDivider
+                          : AppColors.lightDivider,
+                      child: const Icon(
+                        Icons.tv_rounded,
+                        size:  48,
+                        color: AppColors.primaryPurple,
+                      ),
+                    ),
+                  ),
+
+                  // Gradient overlay
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end:   Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.5),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Availability badge
+                  Positioned(
+                    top:   12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color:        slot.isAvailable
+                            ? AppColors.success.withOpacity(0.9)
+                            : AppColors.error.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width:  6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            slot.isAvailable ? 'Available' : 'Booked',
+                            style: const TextStyle(
+                              color:      Colors.white,
+                              fontSize:   11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Price badge
+                  Positioned(
+                    bottom: 12,
+                    left:   12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        gradient:     AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color:      AppColors.primaryPurple.withOpacity(0.5),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        slot.priceLabel,
+                        style: const TextStyle(
+                          color:      Colors.white,
+                          fontSize:   13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Info Section ───────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          slot.name,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_rounded,
+                        size:  14,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${slot.location} · ${slot.area}, ${slot.city}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Stats Row
+                  Row(
+                    children: [
+                      _StatChip(
+                        icon:  Icons.monitor_rounded,
+                        label: slot.aspectRatioLabel,
+                        isDark: isDark,
+                      ),
+                      const SizedBox(width: 8),
+                      _StatChip(
+                        icon:  Icons.people_alt_rounded,
+                        label: slot.footTrafficLabel,
+                        isDark: isDark,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  // CTA
+                  if (slot.isAvailable)
+                    SizedBox(
+                      width:  double.infinity,
+                      height: 44,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient:     AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Book This Slot',
+                            style: TextStyle(
+                              color:      Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize:   14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatChip extends StatelessWidget {
+  final IconData icon;
+  final String   label;
+  final bool     isDark;
+
+  const _StatChip({
+    required this.icon,
+    required this.label,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color:        isDark
+            ? AppColors.darkDivider
+            : AppColors.lightDivider,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size:  12,
+            color: AppColors.primaryPurple,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize:   11,
+              fontWeight: FontWeight.w600,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
