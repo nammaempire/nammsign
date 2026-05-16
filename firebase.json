@@ -1,0 +1,30 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "namma-empire",
+          "appId": "1:1075476022217:android:97b8dbb9dd16ea747b1e18",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "namma-empire",
+          "configurations": {
+            "android": "1:1075476022217:android:97b8dbb9dd16ea747b1e18",
+            "ios": "1:1075476022217:ios:5b40cb5d6c9dc6187b1e18",
+            "web": "1:1075476022217:web:5d6f546e93f41f817b1e18"
+          }
+        }
+      }
+    }
+  }
+}

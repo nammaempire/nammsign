@@ -111,14 +111,11 @@ class _SplashRouterState extends State<_SplashRouter>
                 children: [
                   // ── Logo ─────────────────────────────────────────────
                   Container(
-                    width:  100,
-                    height: 100,
+                    width:   180,
+                    height:  180,
+                    padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      gradient:     const LinearGradient(
-                        colors: [Color(0xFF7C3AED), Color(0xFFA855F7)],
-                        begin:  Alignment.topLeft,
-                        end:    Alignment.bottomRight,
-                      ),
+                      color:        Colors.white,
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
@@ -128,10 +125,9 @@ class _SplashRouterState extends State<_SplashRouter>
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.tv_rounded,
-                      size:  52,
-                      color: Colors.white,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(height: 24),

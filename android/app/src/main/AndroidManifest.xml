@@ -1,6 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ── Required permissions ───────────────────────────────────────────────
+         INTERNET           — Firebase Auth, API calls, Razorpay, image loading
+         CAMERA             — image_picker (capture ads from camera)
+         READ_MEDIA_IMAGES  — image_picker on Android 13+ (API 33+)
+         READ_MEDIA_VIDEO   — image_picker on Android 13+ (API 33+)
+         READ_EXTERNAL_     — image_picker / file_picker on Android 12 and below
+            STORAGE                                                            -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
+
     <application
-        android:label="signage_app"
+        android:label="nammsign"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

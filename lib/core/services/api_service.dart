@@ -1,181 +1,266 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
+/// Backend service for nammsign — backed by Firestore + Firebase Storage.
+///
+/// Replaces the previous REST-API stub. All reads/writes go directly to:
+///   • Firestore (cloud_firestore) — structured data
+///   • Storage (firebase_storage)  — KYC docs + ad creatives
+///
+/// Method signatures match the old REST shape so providers don't change.
 class ApiService {
-  static const String _baseUrl = 'https://your-api.com/api/v1'; // 🔧 Replace with your API URL
-
-  // ── Singleton ─────────────────────────────────────────────────────────────
+  // ── Singleton ────────────────────────────────────────────────────────────
   static final ApiService _instance = ApiService._internal();
   factory ApiService() => _instance;
   ApiService._internal();
 
-  // ── Token Management ──────────────────────────────────────────────────────
-  Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('auth_token');
-  }
+  final FirebaseFirestore _db      = FirebaseFirestore.instance;
+  final FirebaseStorage   _storage = FirebaseStorage.instance;
+  final FirebaseAuth      _auth    = FirebaseAuth.instance;
 
-  Future<Map<String, String>> _headers({bool withAuth = true}) async {
-    final headers = <String, String>{
-      'Content-Type':  'application/json',
-      'Accept':        'application/json',
-    };
-    if (withAuth) {
-      final token = await _getToken();
-      if (token != null) headers['Authorization'] = 'Bearer $token';
+  String get _uid {
+    final u = _auth.currentUser;
+    if (u == null) {
+      throw ApiException(message: 'Not signed in', statusCode: 401);
     }
-    return headers;
+    return u.uid;
   }
 
-  // ── Generic Request Helpers ───────────────────────────────────────────────
-  Future<Map<String, dynamic>> _handleResponse(http.Response response) async {
-    final body = json.decode(response.body) as Map<String, dynamic>;
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return body;
-    }
-    throw ApiException(
-      message:    body['message'] ?? 'Something went wrong',
-      statusCode: response.statusCode,
-    );
-  }
+  // ════════════════════════════════════════════════════════════════════════
+  // Onboarding
+  // ════════════════════════════════════════════════════════════════════════
 
-  Future<Map<String, dynamic>> get(String path) async {
-    final response = await http.get(
-      Uri.parse('$_baseUrl$path'),
-      headers: await _headers(),
-    );
-    return _handleResponse(response);
-  }
-
-  Future<Map<String, dynamic>> post(
-    String path,
-    Map<String, dynamic> body, {
-    bool withAuth = true,
-  }) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl$path'),
-      headers: await _headers(withAuth: withAuth),
-      body: json.encode(body),
-    );
-    return _handleResponse(response);
-  }
-
-  Future<Map<String, dynamic>> put(
-    String path,
-    Map<String, dynamic> body,
-  ) async {
-    final response = await http.put(
-      Uri.parse('$_baseUrl$path'),
-      headers: await _headers(),
-      body: json.encode(body),
-    );
-    return _handleResponse(response);
-  }
-
-  Future<Map<String, dynamic>> delete(String path) async {
-    final response = await http.delete(
-      Uri.parse('$_baseUrl$path'),
-      headers: await _headers(),
-    );
-    return _handleResponse(response);
-  }
-
-  // ── Multipart Upload ──────────────────────────────────────────────────────
-  Future<Map<String, dynamic>> uploadFile(
-    String path,
-    File file,
-    String fieldName, {
-    Map<String, String>? fields,
-  }) async {
-    final token    = await _getToken();
-    final request  = http.MultipartRequest('POST', Uri.parse('$_baseUrl$path'));
-
-    request.headers['Authorization'] = 'Bearer $token';
-    request.files.add(
-      await http.MultipartFile.fromPath(fieldName, file.path),
-    );
-    if (fields != null) request.fields.addAll(fields);
-
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-    return _handleResponse(response);
-  }
-
-  // ── Auth Endpoints ────────────────────────────────────────────────────────
-  Future<Map<String, dynamic>> sendOtp(String phone) =>
-      post('/auth/send-otp', {'phone': phone}, withAuth: false);
-
-  Future<Map<String, dynamic>> verifyOtp(String phone, String otp) =>
-      post('/auth/verify-otp', {'phone': phone, 'otp': otp}, withAuth: false);
-
-  Future<Map<String, dynamic>> googleLogin(String idToken) =>
-      post('/auth/google', {'id_token': idToken}, withAuth: false);
-
-  Future<Map<String, dynamic>> logout() => post('/auth/logout', {});
-
-  // ── Onboarding Endpoints ──────────────────────────────────────────────────
+  /// Submits the KYC form + optional document upload.
+  ///
+  /// [accountType] is `"individual"` or `"corporate"`.
+  /// [data] holds the form fields (full_name + aadhar_last4 for individual;
+  /// company_name + gst_number for corporate).
+  /// [document] is the user's KYC file (Aadhar / GST cert).
   Future<Map<String, dynamic>> submitOnboarding({
     required String accountType,
     required Map<String, dynamic> data,
     File? document,
   }) async {
+    final uid = _uid;
+    String? docUrl;
+
+    // Upload KYC document to private Storage path
     if (document != null) {
-      return uploadFile(
-        '/onboarding/submit',
-        document,
-        'document',
-        fields: {
-          'account_type': accountType,
-          ...data.map((k, v) => MapEntry(k, v.toString())),
-        },
+      final ext = document.path.split('.').last.toLowerCase();
+      final ref = _storage.ref('kyc/$uid/document.$ext');
+      await ref.putFile(document);
+      docUrl = await ref.getDownloadURL();
+    }
+
+    // Sanitize Aadhar — only keep last 4 digits (DPDP Act compliance)
+    final sanitizedData = Map<String, dynamic>.from(data);
+    if (sanitizedData.containsKey('aadhar_number')) {
+      final raw = (sanitizedData.remove('aadhar_number') as String)
+          .replaceAll(RegExp(r'\s'), '');
+      sanitizedData['aadhar_last4'] =
+          raw.length >= 4 ? raw.substring(raw.length - 4) : raw;
+    }
+
+    final userRef = _db.collection('users').doc(uid);
+    final existing = await userRef.get();
+
+    final userData = <String, dynamic>{
+      'uid':              uid,
+      'account_type':     accountType,
+      'kyc_status':       'pending',
+      'kyc_document_url': docUrl,
+      'onboarding_done':  true,
+      'updated_at':       FieldValue.serverTimestamp(),
+      ...sanitizedData,
+    };
+
+    // Auto-fill name/email/phone from Firebase Auth on first write
+    final fbUser = _auth.currentUser!;
+    if (!existing.exists) {
+      userData['created_at'] = FieldValue.serverTimestamp();
+      userData.putIfAbsent('name',  () => fbUser.displayName ?? '');
+      userData.putIfAbsent('email', () => fbUser.email ?? '');
+      userData.putIfAbsent(
+        'phone',
+        () => fbUser.phoneNumber?.replaceFirst('+91', '') ?? '',
       );
     }
-    return post('/onboarding/submit', {'account_type': accountType, ...data});
+
+    await userRef.set(userData, SetOptions(merge: true));
+
+    return {'success': true, 'kyc_status': 'pending'};
   }
 
-  // ── Ad Slot Endpoints ─────────────────────────────────────────────────────
-  Future<Map<String, dynamic>> getLocalSlots() => get('/slots/local');
-  Future<Map<String, dynamic>> getPremiumSlots() => get('/slots/premium');
-  Future<Map<String, dynamic>> getSlotDetail(String slotId) =>
-      get('/slots/$slotId');
+  // ════════════════════════════════════════════════════════════════════════
+  // Slots (signage boards catalog)
+  // ════════════════════════════════════════════════════════════════════════
 
-  // ── Advertisement Endpoints ───────────────────────────────────────────────
+  /// Lists all active local signage slots.
+  Future<Map<String, dynamic>> getLocalSlots() async {
+    final snap = await _db
+        .collection('slots')
+        .where('type', isEqualTo: 'local')
+        .where('active', isEqualTo: true)
+        .get();
+
+    final slots = snap.docs.map((doc) {
+      final d = Map<String, dynamic>.from(doc.data());
+      d['id'] = doc.id;
+      return d;
+    }).toList();
+
+    return {'data': slots};
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Advertisements
+  // ════════════════════════════════════════════════════════════════════════
+
+  /// Creates a new advertisement record + uploads media to Storage.
+  ///
+  /// NOTE: In Phase 7 this becomes a Cloud Function called AFTER Razorpay
+  /// payment verification, so the Flutter client never writes ads directly.
+  /// For now, this is here so the existing flow keeps working during dev.
   Future<Map<String, dynamic>> createAdvertisement(
     Map<String, dynamic> data,
     File media,
-  ) =>
-      uploadFile(
-        '/advertisements',
-        media,
-        'media',
-        fields: data.map((k, v) => MapEntry(k, v.toString())),
-      );
+  ) async {
+    final uid = _uid;
 
-  Future<Map<String, dynamic>> getMyAdvertisements() =>
-      get('/advertisements/mine');
+    final ext = media.path.split('.').last.toLowerCase();
+    final mediaType =
+        const ['mp4', 'mov', 'avi', 'mkv', 'webm'].contains(ext)
+            ? 'video'
+            : 'image';
 
-  Future<Map<String, dynamic>> getAdvertisementStatus(String adId) =>
-      get('/advertisements/$adId/status');
+    // Pre-mint the advertisement ID so we can use it in the storage path
+    final adRef = _db.collection('advertisements').doc();
+    final adId  = adRef.id;
 
-  // ── Payment Endpoints ─────────────────────────────────────────────────────
-  Future<Map<String, dynamic>> createOrder(Map<String, dynamic> data) =>
-      post('/payments/create-order', data);
+    final storageRef = _storage.ref('ads/$uid/$adId/media.$ext');
+    await storageRef.putFile(media);
+    final mediaUrl = await storageRef.getDownloadURL();
 
-  Future<Map<String, dynamic>> verifyPayment(Map<String, dynamic> data) =>
-      post('/payments/verify', data);
+    // Denormalize user + slot fields for display in History list
+    final userSnap = await _db.collection('users').doc(uid).get();
+    final user = userSnap.data() ?? {};
 
-  // ── User Profile ──────────────────────────────────────────────────────────
-  Future<Map<String, dynamic>> getProfile() => get('/user/profile');
-  Future<Map<String, dynamic>> updateProfile(Map<String, dynamic> data) =>
-      put('/user/profile', data);
+    final slotId   = data['slot_id'] as String;
+    final slotSnap = await _db.collection('slots').doc(slotId).get();
+    final slot     = slotSnap.data() ?? {};
+
+    final duration = int.tryParse('${data['duration'] ?? '0'}') ?? 0;
+    final pricePerDay = (slot['price_per_day'] as num?)?.toDouble() ?? 0.0;
+    final amount = pricePerDay * duration;
+
+    final adData = <String, dynamic>{
+      'id':            adId,
+      'user_id':       uid,
+      'user_name':     user['name'] ?? '',
+      'user_phone':    user['phone'] ?? '',
+      'slot_id':       slotId,
+      'slot_name':     slot['name'] ?? '',
+      'slot_location':
+          '${slot['area'] ?? ''}, ${slot['city'] ?? ''}'
+              .replaceFirst(RegExp(r'^,\s*'), ''),
+      'title':         data['title'],
+      'description':   data['description'],
+      'media_url':     mediaUrl,
+      'media_type':    mediaType,
+      'duration_days': duration,
+      'amount_paid':   amount,
+      'status':        'pending',
+      'play_count':    0,
+      'created_at':    FieldValue.serverTimestamp(),
+    };
+
+    await adRef.set(adData);
+
+    // Echo back a copy with ISO timestamp so the existing fromJson works.
+    final echo = Map<String, dynamic>.from(adData);
+    echo['created_at'] = DateTime.now().toIso8601String();
+    return {'data': echo};
+  }
+
+  /// Returns the current user's ads, newest first.
+  Future<Map<String, dynamic>> getMyAdvertisements() async {
+    final snap = await _db
+        .collection('advertisements')
+        .where('user_id', isEqualTo: _uid)
+        .orderBy('created_at', descending: true)
+        .get();
+
+    final ads = snap.docs.map(_adDocToJson).toList();
+    return {'data': ads};
+  }
+
+  /// Helper: convert Firestore Timestamp fields to ISO strings so the
+  /// existing `Advertisement.fromJson` continues to work unchanged.
+  Map<String, dynamic> _adDocToJson(
+    QueryDocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
+    final d = Map<String, dynamic>.from(doc.data());
+    d['id'] = doc.id;
+    if (d['created_at'] is Timestamp) {
+      d['created_at'] = (d['created_at'] as Timestamp).toDate().toIso8601String();
+    } else {
+      d['created_at'] ??= DateTime.now().toIso8601String();
+    }
+    if (d['expires_at'] is Timestamp) {
+      d['expires_at'] = (d['expires_at'] as Timestamp).toDate().toIso8601String();
+    }
+    return d;
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Payments (placeholder — Cloud Functions in Phase 7)
+  // ════════════════════════════════════════════════════════════════════════
+
+  Future<Map<String, dynamic>> createOrder(Map<String, dynamic> data) async {
+    throw ApiException(
+      message: 'Payment integration coming in Phase 7. '
+          'Cloud Functions for Razorpay are not deployed yet.',
+      statusCode: 501,
+    );
+  }
+
+  Future<Map<String, dynamic>> verifyPayment(Map<String, dynamic> data) async {
+    throw ApiException(
+      message: 'Payment integration coming in Phase 7. '
+          'Cloud Functions for Razorpay are not deployed yet.',
+      statusCode: 501,
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // User Profile
+  // ════════════════════════════════════════════════════════════════════════
+
+  Future<Map<String, dynamic>> getProfile() async {
+    final doc = await _db.collection('users').doc(_uid).get();
+    if (!doc.exists) {
+      return {'data': null};
+    }
+    return {'data': doc.data()};
+  }
+
+  Future<Map<String, dynamic>> updateProfile(
+    Map<String, dynamic> data,
+  ) async {
+    await _db.collection('users').doc(_uid).set(
+      {...data, 'updated_at': FieldValue.serverTimestamp()},
+      SetOptions(merge: true),
+    );
+    return {'success': true};
+  }
 }
 
-// ── Custom Exception ──────────────────────────────────────────────────────────
+// ── Custom Exception ───────────────────────────────────────────────────────
 class ApiException implements Exception {
   final String message;
-  final int statusCode;
+  final int    statusCode;
   const ApiException({required this.message, required this.statusCode});
 
   @override

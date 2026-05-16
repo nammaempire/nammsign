@@ -182,10 +182,7 @@ class _OtpScreenState extends State<OtpScreen> {
             // ── Verify Button ────────────────────────────────────────────
             Consumer<AuthProvider>(
               builder: (_, auth, __) => ElevatedButton(
-                onPressed: (){
- Navigator.pushReplacementNamed(context, '/home');
-                },
-                // auth.isLoading ? null : _verifyOtp,
+                onPressed: auth.isLoading ? null : _verifyOtp,
                 style:     ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                 child: Ink(
                   decoration: BoxDecoration(

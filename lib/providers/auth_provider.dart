@@ -33,11 +33,20 @@ class AuthProvider extends ChangeNotifier {
     _setLoading();
     try {
       final success = await _authService.sendOtp(phone);
-      _status = AuthStatus.unauthenticated;
+
+      // If Firebase auto-verified the SMS (Android), the user is already
+      // signed in by the time sendOtp returns true. Reflect that here.
+      if (success && await _authService.isLoggedIn()) {
+        _userData = await _authService.getUserData();
+        _status = AuthStatus.authenticated;
+      } else {
+        _status = AuthStatus.unauthenticated;
+      }
       notifyListeners();
       return success;
     } catch (e) {
-      _setError(e.toString());
+      // Service throws a humanized message; surface it directly.
+      _setError(e is String ? e : e.toString());
       return false;
     }
   }

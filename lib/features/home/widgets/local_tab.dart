@@ -41,10 +41,8 @@ class _LocalTabState extends State<LocalTab>
           );
         }
 
-        // Use mock data as fallback when API is not configured
-        final slots = provider.localSlots.isNotEmpty
-            ? provider.localSlots
-            : AdSlot.mockLocalSlots;
+        // Real Firestore data (empty list = no slots seeded yet)
+        final slots = provider.localSlots;
 
         return RefreshIndicator(
           color: AppColors.primaryPurple,
@@ -113,7 +111,7 @@ class _LocalTabState extends State<LocalTab>
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text(
-                              'Chennai',
+                              'Bangalore',
                               style: TextStyle(
                                 color:      AppColors.primaryPurple,
                                 fontSize:   12,

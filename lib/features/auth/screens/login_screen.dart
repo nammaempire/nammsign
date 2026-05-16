@@ -48,21 +48,29 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _sendOtp() async {
     if (!_formKey.currentState!.validate()) return;
     final phone = _phoneCtrl.text.trim();
-    final auth = context.read<AuthProvider>();
+    final auth  = context.read<AuthProvider>();
 
     final success = await auth.sendOtp(phone);
     if (!mounted) return;
 
-    if (success) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => OtpScreen(phone: phone),
-        ),
-      );
-    } else {
+    if (!success) {
       _showError(auth.error ?? 'Failed to send OTP');
+      return;
     }
+
+    // Android only: Play Services may have auto-read the SMS and signed
+    // the user in. If so, skip the OTP screen entirely.
+    if (auth.status == AuthStatus.authenticated) {
+      _navigateAfterLogin(!auth.onboardingDone);
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OtpScreen(phone: phone),
+      ),
+    );
   }
 
   // ── Google Sign In ────────────────────────────────────────────────────────
@@ -183,15 +191,7 @@ class _LoginScreenState extends State<LoginScreen>
                         // ── Send OTP Button ─────────────────────────────────
                         Consumer<AuthProvider>(
                           builder: (_, auth, __) => ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => OtpScreen(phone: ''),
-                                ),
-                              );
-                            },
-                            //  auth.isLoading ? null : _sendOtp,
+                            onPressed: auth.isLoading ? null : _sendOtp,
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
                             ),
@@ -276,23 +276,23 @@ class _LoginScreenState extends State<LoginScreen>
 
   Widget _buildLogo(bool isDark) {
     return Container(
-      width: 90,
-      height: 90,
+      width:   140,
+      height:  140,
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        color:        Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryPurple.withOpacity(0.4),
+            color:      AppColors.primaryPurple.withOpacity(0.4),
             blurRadius: 20,
-            offset: const Offset(0, 8),
+            offset:     const Offset(0, 8),
           ),
         ],
       ),
-      child: const Icon(
-        Icons.tv_rounded,
-        size: 48,
-        color: Colors.white,
+      child: Image.asset(
+        'assets/images/logo.png',
+        fit: BoxFit.contain,
       ),
     );
   }

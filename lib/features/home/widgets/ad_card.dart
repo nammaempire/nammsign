@@ -39,25 +39,36 @@ class AdSlotCard extends StatelessWidget {
             // ── Slot Image ─────────────────────────────────────────────
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              child: Stack(
-                children: [
-                  Image.network(
-                    slot.imageUrl,
-                    height:     180,
-                    width:      double.infinity,
-                    fit:        BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 180,
-                      color:  isDark
-                          ? AppColors.darkDivider
-                          : AppColors.lightDivider,
-                      child: const Icon(
-                        Icons.tv_rounded,
-                        size:  48,
-                        color: AppColors.primaryPurple,
-                      ),
-                    ),
-                  ),
+              child: SizedBox(
+                height: 180,
+                width:  double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                  slot.imageUrl.isEmpty
+                      ? _placeholderImage(isDark)
+                      : Image.network(
+                          slot.imageUrl,
+                          height:     180,
+                          width:      double.infinity,
+                          fit:        BoxFit.cover,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Container(
+                              height: 180,
+                              width:  double.infinity,
+                              color: isDark
+                                  ? AppColors.darkDivider
+                                  : AppColors.lightDivider,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(
+                                color: AppColors.primaryPurple,
+                                strokeWidth: 2,
+                              ),
+                            );
+                          },
+                          errorBuilder: (_, __, ___) => _placeholderImage(isDark),
+                        ),
 
                   // Gradient overlay
                   Positioned.fill(
@@ -140,7 +151,8 @@ class AdSlotCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],
+                  ],
+                ),
               ),
             ),
 
@@ -236,6 +248,20 @@ class AdSlotCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _placeholderImage(bool isDark) {
+    return Container(
+      height: 180,
+      width:  double.infinity,
+      color:  isDark ? AppColors.darkDivider : AppColors.lightDivider,
+      alignment: Alignment.center,
+      child: const Icon(
+        Icons.tv_rounded,
+        size:  48,
+        color: AppColors.primaryPurple,
       ),
     );
   }

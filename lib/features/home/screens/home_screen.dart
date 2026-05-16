@@ -118,39 +118,8 @@ class _AdSlotsPageState extends State<_AdSlotsPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width:  28,
-              height: 28,
-              decoration: BoxDecoration(
-                gradient:     AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.tv_rounded, size: 16, color: Colors.white),
-            ),
-            const SizedBox(width: 8),
-            const Text(AppStrings.appName),
-          ],
-        ),
+        title: const Text(AppStrings.appName),
         actions: [
-          // Theme Toggle
-          Consumer<ThemeProvider>(
-            builder: (_, themeProvider, __) => IconButton(
-              icon: Icon(
-                themeProvider.isDark
-                    ? Icons.wb_sunny_rounded
-                    : Icons.nightlight_round,
-                color: AppColors.primaryPurple,
-              ),
-              onPressed: themeProvider.toggleTheme,
-              tooltip: themeProvider.isDark
-                  ? AppStrings.lightMode
-                  : AppStrings.darkMode,
-            ),
-          ),
-
           // Notification Bell
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
@@ -158,21 +127,55 @@ class _AdSlotsPageState extends State<_AdSlotsPage>
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
+          preferredSize: const Size.fromHeight(72),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+            child: Container(
+              height: 48,
+              decoration: BoxDecoration(
+                color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
                   color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
                 ),
               ),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              tabs: const [
-                Tab(text: AppStrings.local),
-                Tab(text: AppStrings.premium),
-              ],
+              child: TabBar(
+                controller:           _tabController,
+                indicator: BoxDecoration(
+                  gradient:     AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(11),
+                  boxShadow: [
+                    BoxShadow(
+                      color:      AppColors.primaryPurple.withOpacity(0.35),
+                      blurRadius: 8,
+                      offset:     const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                indicatorPadding:     const EdgeInsets.all(4),
+                indicatorSize:        TabBarIndicatorSize.tab,
+                dividerColor:         Colors.transparent,
+                labelColor:           Colors.white,
+                unselectedLabelColor: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize:   14,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize:   14,
+                ),
+                splashFactory:        NoSplash.splashFactory,
+                overlayColor: WidgetStateProperty.resolveWith(
+                  (states) => Colors.transparent,
+                ),
+                tabs: const [
+                  Tab(text: AppStrings.local),
+                  Tab(text: AppStrings.premium),
+                ],
+              ),
             ),
           ),
         ),

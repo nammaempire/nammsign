@@ -1,0 +1,80 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// nammsign — Firestore security rules
+// Last reviewed: 2026-05-16
+// Project: namma-empire (asia-south1)
+// ─────────────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Admin = a Firebase user with custom claim `admin: true`.
+    // Set via Firebase Admin SDK (we configure this in Phase 8).
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // ── Users collection ─────────────────────────────────────────────────
+    //   • User can read + write their own profile document.
+    //   • Admin can read all users + update KYC status.
+    //   • No one can read another user's profile.
+    match /users/{userId} {
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── Slots collection (public signage board catalog) ───────────────────
+    //   • Public read — anyone can browse the slot list (even TV players
+    //     that haven't authenticated).
+    //   • Only admin can create/modify/disable slots.
+    match /slots/{slotId} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Advertisements collection (user ad bookings) ──────────────────────
+    //   • Read: owner of the ad + admin only.
+    //   • Create: any signed-in user, but they MUST set user_id to themselves
+    //     (prevents creating ads attributed to other users).
+    //   • Update / delete: admin only (so a user cannot self-approve their
+    //     own ad or change another user's ad).
+    match /advertisements/{adId} {
+      allow read: if isSignedIn()
+                  && (resource.data.user_id == request.auth.uid || isAdmin());
+
+      allow create: if isSignedIn()
+                    && request.resource.data.user_id == request.auth.uid
+                    && request.resource.data.status == 'pending';
+
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── Payments collection (Razorpay transactions) ───────────────────────
+    //   • Read: owner of the payment + admin only.
+    //   • Write: ONLY Cloud Functions (which run with admin privileges,
+    //     bypassing these rules). The Flutter client must NEVER write to
+    //     this collection directly — that would let users fake payments.
+    match /payments/{paymentId} {
+      allow read:  if isSignedIn()
+                   && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow write: if false;
+    }
+
+    // ── Default deny ──────────────────────────────────────────────────────
+    // Any collection not explicitly allowed above is denied.
+    // (This is the default behavior of Firestore rules but stated for clarity.)
+  }
+}

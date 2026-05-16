@@ -10,12 +10,12 @@ class PremiumTab extends StatelessWidget {
     final theme  = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(32, 40, 32, 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
             // ── Animated Crown Icon ────────────────────────────────────
             Container(
               width:  120,
@@ -123,8 +123,7 @@ class PremiumTab extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   static const _premiumFeatures = [

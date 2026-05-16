@@ -52,10 +52,8 @@ class _HistoryScreenState extends State<HistoryScreen>
             );
           }
 
-          // Use mock data as fallback
-          final ads = provider.myAds.isNotEmpty
-              ? provider.myAds
-              : Advertisement.mockAds;
+          // Real Firestore data (empty list shows empty state)
+          final ads = provider.myAds;
 
           if (ads.isEmpty) {
             return _EmptyHistory(isDark: isDark);

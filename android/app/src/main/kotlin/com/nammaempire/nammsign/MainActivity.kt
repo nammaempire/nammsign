@@ -1,4 +1,4 @@
-package com.example.signage_app
+package com.nammaempire.nammsign
 
 import io.flutter.embedding.android.FlutterActivity
 

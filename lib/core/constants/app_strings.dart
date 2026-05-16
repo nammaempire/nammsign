@@ -1,7 +1,7 @@
 class AppStrings {
   AppStrings._();
 
-  static const String appName        = 'SignageAds';
+  static const String appName        = 'nammsign';
   static const String tagline        = 'Your Ad, On Every Board';
 
   // Auth
