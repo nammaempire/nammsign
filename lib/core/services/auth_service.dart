@@ -17,7 +17,7 @@ class AuthService {
   AuthService._internal();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _google = GoogleSignIn(scopes: ['email', 'profile']);
+  final GoogleSignIn _google = GoogleSignIn();
 
   /// Stored after `sendOtp` returns; consumed by `verifyOtp`.
   String? _verificationId;

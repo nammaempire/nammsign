@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/constants/app_strings.dart';
-import 'core/constants/app_theme.dart';
-import 'features/auth/screens/login_screen.dart';
-import 'features/home/screens/home_screen.dart';
-import 'features/onboarding/screens/onboarding_screen.dart';
-import 'providers/auth_provider.dart';
-import 'providers/theme_provider.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/core/constants/app_theme.dart';
+import 'package:signage_app/features/auth/screens/login_screen.dart';
+import 'package:signage_app/features/home/screens/home_screen.dart';
+import 'package:signage_app/features/onboarding/screens/onboarding_screen.dart';
+import 'package:signage_app/providers/auth_provider.dart';
+import 'package:signage_app/providers/theme_provider.dart';
 
 class SignageApp extends StatelessWidget {
   const SignageApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (_, themeProvider, __) {
-        return MaterialApp(
+  Widget build(BuildContext context) => Consumer<ThemeProvider>(
+        builder: (_, themeProvider, __) => MaterialApp(
           title: AppStrings.appName,
           debugShowCheckedModeBanner: false,
           themeMode: themeProvider.themeMode,
@@ -27,10 +25,8 @@ class SignageApp extends StatelessWidget {
             '/onboarding': (_) => const OnboardingScreen(),
             '/home': (_) => const HomeScreen(),
           },
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 // ── Splash / Router ───────────────────────────────────────────────────────────
@@ -89,82 +85,81 @@ class _SplashRouterState extends State<_SplashRouter>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0F0A1E), Color(0xFF1A0050), Color(0xFF0F0A1E)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+  Widget build(BuildContext context) => Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0F0A1E), Color(0xFF1A0050), Color(0xFF0F0A1E)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Center(
-          child: FadeTransition(
-            opacity: _fadeAnim,
-            child: ScaleTransition(
-              scale: _scaleAnim,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // ── Logo ─────────────────────────────────────────────
-                  Container(
-                    width: 180,
-                    height: 180,
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF7C3AED).withValues(alpha: 0.5),
-                          blurRadius: 30,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
+          child: Center(
+            child: FadeTransition(
+              opacity: _fadeAnim,
+              child: ScaleTransition(
+                scale: _scaleAnim,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // ── Logo ─────────────────────────────────────────────
+                    Container(
+                      width: 180,
+                      height: 180,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                const Color(0xFF7C3AED).withValues(alpha: 0.5),
+                            blurRadius: 30,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // ── App Name ─────────────────────────────────────────
-                  const Text(
-                    AppStrings.appName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
+                    // ── App Name ─────────────────────────────────────────
+                    const Text(
+                      AppStrings.appName,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    AppStrings.tagline,
-                    style: TextStyle(
-                      color: Colors.white54,
-                      fontSize: 14,
+                    const SizedBox(height: 6),
+                    const Text(
+                      AppStrings.tagline,
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 60),
+                    const SizedBox(height: 60),
 
-                  // ── Loading indicator ─────────────────────────────────
-                  const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Color(0xFFA855F7),
-                      strokeWidth: 2.5,
+                    // ── Loading indicator ─────────────────────────────────
+                    const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Color(0xFFA855F7),
+                        strokeWidth: 2.5,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

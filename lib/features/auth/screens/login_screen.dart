@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../providers/auth_provider.dart';
-import '../../../core/utils/validators.dart';
-import 'otp_screen.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/core/utils/validators.dart';
+import 'package:signage_app/features/auth/screens/otp_screen.dart';
+import 'package:signage_app/providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -121,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen>
             child: SlideTransition(
               position: _slideAnim,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: size.height * 0.08),
 
@@ -169,7 +168,9 @@ class _LoginScreenState extends State<LoginScreen>
                             counterText: '',
                             prefixIcon: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 16),
+                                horizontal: 14,
+                                vertical: 16,
+                              ),
                               child: Text(
                                 '+91',
                                 style: TextStyle(
@@ -181,8 +182,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
                               ),
                             ),
-                            prefixIconConstraints:
-                                const BoxConstraints(minWidth: 0),
+                            prefixIconConstraints: const BoxConstraints(),
                           ),
                           validator: Validators.phone,
                         ),
@@ -274,28 +274,26 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildLogo(bool isDark) {
-    return Container(
-      width: 140,
-      height: 140,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryPurple.withValues(alpha: 0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Image.asset(
-        'assets/images/logo.png',
-        fit: BoxFit.contain,
-      ),
-    );
-  }
+  Widget _buildLogo(bool isDark) => Container(
+        width: 140,
+        height: 140,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryPurple.withValues(alpha: 0.4),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Image.asset(
+          'assets/images/logo.png',
+          fit: BoxFit.contain,
+        ),
+      );
 }
 
 // ── Google Sign In Button ─────────────────────────────────────────────────────

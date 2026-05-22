@@ -1,12 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'app.dart';
-import 'firebase_options.dart';
-import 'providers/theme_provider.dart';
-import 'providers/auth_provider.dart';
-import 'providers/advertisement_provider.dart';
+
+import 'package:signage_app/app.dart';
+import 'package:signage_app/firebase_options.dart';
+import 'package:signage_app/providers/advertisement_provider.dart';
+import 'package:signage_app/providers/auth_provider.dart';
+import 'package:signage_app/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

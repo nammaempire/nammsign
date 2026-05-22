@@ -1,8 +1,9 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import '../core/services/api_service.dart';
-import '../models/advertisement_model.dart';
-import '../models/ad_slot_model.dart';
+import 'package:signage_app/core/services/api_service.dart';
+import 'package:signage_app/models/ad_slot_model.dart';
+import 'package:signage_app/models/advertisement_model.dart';
 
 enum AdStatus { initial, loading, success, error }
 

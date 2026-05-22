@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
 
 class PremiumTab extends StatelessWidget {
   const PremiumTab({super.key});
@@ -14,7 +14,6 @@ class PremiumTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(32, 40, 32, 32),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ── Animated Crown Icon ────────────────────────────────────
           Container(
@@ -46,13 +45,17 @@ class PremiumTab extends StatelessWidget {
               color: AppColors.primaryPurple.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                  color: AppColors.primaryPurple.withValues(alpha: 0.4)),
+                color: AppColors.primaryPurple.withValues(alpha: 0.4),
+              ),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.stars_rounded,
-                    size: 16, color: AppColors.primaryPurple),
+                Icon(
+                  Icons.stars_rounded,
+                  size: 16,
+                  color: AppColors.primaryPurple,
+                ),
                 SizedBox(width: 6),
                 Text(
                   AppStrings.premiumSoon,
@@ -111,7 +114,8 @@ class PremiumTab extends StatelessWidget {
                   backgroundColor: AppColors.success,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               );
             },
@@ -147,49 +151,47 @@ class _FeatureRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.primaryPurple.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: AppColors.primaryPurple.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, size: 18, color: AppColors.primaryPurple),
             ),
-            child: Icon(icon, size: 18, color: AppColors.primaryPurple),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
-          ),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.warning.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: const Text(
-              'Soon',
+            const SizedBox(width: 12),
+            Text(
+              title,
               style: TextStyle(
-                color: AppColors.warning,
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                'Soon',
+                style: TextStyle(
+                  color: AppColors.warning,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 }

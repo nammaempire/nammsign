@@ -3,11 +3,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/services/api_service.dart';
-import '../../../core/utils/validators.dart';
-import '../../../providers/auth_provider.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/core/services/api_service.dart';
+import 'package:signage_app/core/utils/validators.dart';
+import 'package:signage_app/providers/auth_provider.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -274,60 +274,58 @@ class _TypeCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primaryPurple.withValues(alpha: 0.12)
-              : (isDark ? AppColors.darkCard : AppColors.lightCard),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
             color: selected
-                ? AppColors.primaryPurple
-                : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
-            width: selected ? 2 : 1,
+                ? AppColors.primaryPurple.withValues(alpha: 0.12)
+                : (isDark ? AppColors.darkCard : AppColors.lightCard),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: selected
+                  ? AppColors.primaryPurple
+                  : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
+              width: selected ? 2 : 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                color: selected ? AppColors.primaryPurple : null,
+                size: 28,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: selected
+                      ? AppColors.primaryPurple
+                      : (isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
+            ],
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              icon,
-              color: selected ? AppColors.primaryPurple : null,
-              size: 28,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: selected
-                    ? AppColors.primaryPurple
-                    : (isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 11,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+      );
 }
 
 // ── Corporate Fields ──────────────────────────────────────────────────────────
@@ -342,36 +340,34 @@ class _CorporateFields extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: companyCtrl,
-          decoration: const InputDecoration(
-            labelText: AppStrings.companyName,
-            prefixIcon: Icon(Icons.business_outlined),
+  Widget build(BuildContext context) => Column(
+        children: [
+          TextFormField(
+            controller: companyCtrl,
+            decoration: const InputDecoration(
+              labelText: AppStrings.companyName,
+              prefixIcon: Icon(Icons.business_outlined),
+            ),
+            textCapitalization: TextCapitalization.words,
+            validator: (v) => Validators.required(v, 'Company name'),
           ),
-          textCapitalization: TextCapitalization.words,
-          validator: (v) => Validators.required(v, 'Company name'),
-        ),
-        const SizedBox(height: 16),
-        TextFormField(
-          controller: gstCtrl,
-          decoration: const InputDecoration(
-            labelText: AppStrings.gstLabel,
-            prefixIcon: Icon(Icons.receipt_long_outlined),
-            hintText: '22AAAAA0000A1Z5',
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: gstCtrl,
+            decoration: const InputDecoration(
+              labelText: AppStrings.gstLabel,
+              prefixIcon: Icon(Icons.receipt_long_outlined),
+              hintText: '22AAAAA0000A1Z5',
+            ),
+            textCapitalization: TextCapitalization.characters,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+              LengthLimitingTextInputFormatter(15),
+            ],
+            validator: Validators.gst,
           ),
-          textCapitalization: TextCapitalization.characters,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
-            LengthLimitingTextInputFormatter(15),
-          ],
-          validator: Validators.gst,
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }
 
 // ── Individual Fields ─────────────────────────────────────────────────────────
@@ -386,36 +382,34 @@ class _IndividualFields extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: nameCtrl,
-          decoration: const InputDecoration(
-            labelText: AppStrings.fullName,
-            prefixIcon: Icon(Icons.person_outline_rounded),
+  Widget build(BuildContext context) => Column(
+        children: [
+          TextFormField(
+            controller: nameCtrl,
+            decoration: const InputDecoration(
+              labelText: AppStrings.fullName,
+              prefixIcon: Icon(Icons.person_outline_rounded),
+            ),
+            textCapitalization: TextCapitalization.words,
+            validator: (v) => Validators.required(v, 'Full name'),
           ),
-          textCapitalization: TextCapitalization.words,
-          validator: (v) => Validators.required(v, 'Full name'),
-        ),
-        const SizedBox(height: 16),
-        TextFormField(
-          controller: aadharCtrl,
-          decoration: const InputDecoration(
-            labelText: AppStrings.aadharNumber,
-            prefixIcon: Icon(Icons.credit_card_outlined),
-            hintText: 'XXXX XXXX XXXX',
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: aadharCtrl,
+            decoration: const InputDecoration(
+              labelText: AppStrings.aadharNumber,
+              prefixIcon: Icon(Icons.credit_card_outlined),
+              hintText: 'XXXX XXXX XXXX',
+            ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(12),
+            ],
+            validator: Validators.aadhar,
           ),
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(12),
-          ],
-          validator: Validators.aadhar,
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }
 
 // ── Document Upload Card ──────────────────────────────────────────────────────
@@ -451,7 +445,6 @@ class _DocumentUploadCard extends StatelessWidget {
             color: documentName != null
                 ? AppColors.primaryPurple
                 : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
-            style: BorderStyle.solid,
           ),
         ),
         child: Row(

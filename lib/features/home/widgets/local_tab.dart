@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../providers/advertisement_provider.dart';
-import '../../advertisement/screens/detail_screen.dart';
-import 'ad_card.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/features/advertisement/screens/detail_screen.dart';
+import 'package:signage_app/features/home/widgets/ad_card.dart';
+import 'package:signage_app/providers/advertisement_provider.dart';
 
 class LocalTab extends StatefulWidget {
   const LocalTab({super.key});
@@ -56,7 +56,9 @@ class _LocalTabState extends State<LocalTab>
                       // ── Search Bar ──────────────────────────────────
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color:
                               isDark ? AppColors.darkCard : AppColors.lightCard,
@@ -102,7 +104,9 @@ class _LocalTabState extends State<LocalTab>
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.primaryPurple
                                   .withValues(alpha: 0.1),

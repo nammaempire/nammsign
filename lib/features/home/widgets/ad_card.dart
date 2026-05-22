@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../models/ad_slot_model.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/models/ad_slot_model.dart';
 
 class AdSlotCard extends StatelessWidget {
   final AdSlot slot;
@@ -94,7 +94,9 @@ class AdSlotCard extends StatelessWidget {
                       right: 12,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
                           color: slot.isAvailable
                               ? AppColors.success.withValues(alpha: 0.9)
@@ -132,7 +134,9 @@ class AdSlotCard extends StatelessWidget {
                       left: 12,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           gradient: AppColors.primaryGradient,
                           borderRadius: BorderRadius.circular(20),
@@ -255,19 +259,17 @@ class AdSlotCard extends StatelessWidget {
     );
   }
 
-  Widget _placeholderImage(bool isDark) {
-    return Container(
-      height: 180,
-      width: double.infinity,
-      color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-      alignment: Alignment.center,
-      child: const Icon(
-        Icons.tv_rounded,
-        size: 48,
-        color: AppColors.primaryPurple,
-      ),
-    );
-  }
+  Widget _placeholderImage(bool isDark) => Container(
+        height: 180,
+        width: double.infinity,
+        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+        alignment: Alignment.center,
+        child: const Icon(
+          Icons.tv_rounded,
+          size: 48,
+          color: AppColors.primaryPurple,
+        ),
+      );
 }
 
 class _StatChip extends StatelessWidget {
@@ -282,34 +284,32 @@ class _StatChip extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 12,
-            color: AppColors.primaryPurple,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 12,
+              color: AppColors.primaryPurple,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+            ),
+          ],
+        ),
+      );
 }

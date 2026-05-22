@@ -27,8 +27,9 @@ class Validators {
     if (value == null || value.isEmpty) return 'Aadhar number is required';
     final clean = value.replaceAll(' ', '').replaceAll('-', '');
     if (clean.length != 12) return 'Aadhar must be 12 digits';
-    if (!RegExp(r'^\d{12}$').hasMatch(clean))
+    if (!RegExp(r'^\d{12}$').hasMatch(clean)) {
       return 'Enter a valid Aadhar number';
+    }
     return null;
   }
 

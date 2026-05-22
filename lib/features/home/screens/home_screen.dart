@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../history/screens/history_screen.dart';
-import '../../profile/screens/profile_screen.dart';
-import '../widgets/local_tab.dart';
-import '../widgets/premium_tab.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/features/history/screens/history_screen.dart';
+import 'package:signage_app/features/home/widgets/local_tab.dart';
+import 'package:signage_app/features/home/widgets/premium_tab.dart';
+import 'package:signage_app/features/profile/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

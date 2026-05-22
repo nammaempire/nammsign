@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../providers/auth_provider.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/providers/auth_provider.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phone;
@@ -259,44 +259,42 @@ class _OtpBox extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 50,
-      height: 58,
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        maxLength: 1,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        onChanged: onChanged,
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          color:
-              isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-        ),
-        decoration: InputDecoration(
-          counterText: '',
-          contentPadding: EdgeInsets.zero,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(
-              color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-            ),
+  Widget build(BuildContext context) => SizedBox(
+        width: 50,
+        height: 58,
+        child: TextField(
+          controller: controller,
+          focusNode: focusNode,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          maxLength: 1,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onChanged: onChanged,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color:
+                isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: AppColors.primaryPurple,
-              width: 2,
+          decoration: InputDecoration(
+            counterText: '',
+            contentPadding: EdgeInsets.zero,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(
+                color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+              ),
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: AppColors.primaryPurple,
+                width: 2,
+              ),
+            ),
+            fillColor: isDark ? AppColors.darkCard : AppColors.lightCard,
+            filled: true,
           ),
-          fillColor: isDark ? AppColors.darkCard : AppColors.lightCard,
-          filled: true,
         ),
-      ),
-    );
-  }
+      );
 }

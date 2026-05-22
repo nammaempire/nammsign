@@ -1,13 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/services/api_service.dart';
-import '../../../models/ad_slot_model.dart';
-import '../../../providers/advertisement_provider.dart';
-import 'success_screen.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/core/services/api_service.dart';
+import 'package:signage_app/features/advertisement/screens/success_screen.dart';
+import 'package:signage_app/models/ad_slot_model.dart';
+import 'package:signage_app/providers/advertisement_provider.dart';
 
 class PaymentScreen extends StatefulWidget {
   final AdSlot slot;
@@ -260,8 +261,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.info_outline_rounded,
-                      color: AppColors.warning, size: 20),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: AppColors.warning,
+                    size: 20,
+                  ),
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -305,8 +309,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.lock_rounded,
-                                color: Colors.white, size: 18),
+                            const Icon(
+                              Icons.lock_rounded,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               '${AppStrings.payNow} · ₹${widget.totalAmount.toStringAsFixed(0)}',
@@ -371,38 +378,36 @@ class _OrderRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
             ),
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: isTotal ? 16 : 14,
-              fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
-              color: isTotal
-                  ? AppColors.primaryPurple
-                  : (isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary),
+            const Spacer(),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: isTotal ? 16 : 14,
+                fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
+                color: isTotal
+                    ? AppColors.primaryPurple
+                    : (isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 class _OrderDivider extends StatelessWidget {

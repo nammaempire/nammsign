@@ -1,13 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../models/ad_slot_model.dart';
-import '../../../providers/advertisement_provider.dart';
-import '../widgets/signage_preview.dart';
-import 'payment_screen.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/features/advertisement/screens/payment_screen.dart';
+import 'package:signage_app/features/advertisement/widgets/signage_preview.dart';
+import 'package:signage_app/models/ad_slot_model.dart';
+import 'package:signage_app/providers/advertisement_provider.dart';
 
 class DetailScreen extends StatefulWidget {
   final AdSlot slot;
@@ -311,15 +312,13 @@ class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.label});
 
   @override
-  Widget build(BuildContext context) {
-    return Text(
-      label,
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: AppColors.primaryPurple,
-          ),
-    );
-  }
+  Widget build(BuildContext context) => Text(
+        label,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: AppColors.primaryPurple,
+            ),
+      );
 }
 
 class _SlotInfoCard extends StatelessWidget {
@@ -328,65 +327,64 @@ class _SlotInfoCard extends StatelessWidget {
   const _SlotInfoCard({required this.slot, required this.isDark});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF4C1D95), Color(0xFF7C3AED)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
         ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(14),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child:
+                  const Icon(Icons.tv_rounded, color: Colors.white, size: 28),
             ),
-            child: const Icon(Icons.tv_rounded, color: Colors.white, size: 28),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  slot.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    slot.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${slot.location} · ${slot.city}',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
+                  const SizedBox(height: 4),
+                  Text(
+                    '${slot.location} · ${slot.city}',
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  slot.priceLabel,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
+                  const SizedBox(height: 6),
+                  Text(
+                    slot.priceLabel,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 class _DurationSelector extends StatelessWidget {
@@ -403,45 +401,45 @@ class _DurationSelector extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: options.map((d) {
-        final isSelected = d == selected;
-        return GestureDetector(
-          onTap: () => onSelect(d),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.primaryPurple
-                  : (isDark ? AppColors.darkCard : AppColors.lightCard),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
+  Widget build(BuildContext context) => Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: options.map((d) {
+          final isSelected = d == selected;
+          return GestureDetector(
+            onTap: () => onSelect(d),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.primaryPurple
-                    : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
+                    : (isDark ? AppColors.darkCard : AppColors.lightCard),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.primaryPurple
+                      : (isDark
+                          ? AppColors.darkDivider
+                          : AppColors.lightDivider),
+                ),
+              ),
+              child: Text(
+                '$d ${d == 1 ? 'Day' : 'Days'}',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: isSelected
+                      ? Colors.white
+                      : (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary),
+                ),
               ),
             ),
-            child: Text(
-              '$d ${d == 1 ? 'Day' : 'Days'}',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-                color: isSelected
-                    ? Colors.white
-                    : (isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
+          );
+        }).toList(),
+      );
 }
 
 class _PriceSummary extends StatelessWidget {
@@ -458,42 +456,43 @@ class _PriceSummary extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.primaryPurple.withValues(alpha: 0.1)
-            : AppColors.primaryPurple.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primaryPurple.withValues(alpha: 0.2),
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(top: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isDark
+              ? AppColors.primaryPurple.withValues(alpha: 0.1)
+              : AppColors.primaryPurple.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.primaryPurple.withValues(alpha: 0.2),
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.calculate_outlined,
-              color: AppColors.primaryPurple, size: 18),
-          const SizedBox(width: 8),
-          Text(
-            '₹${price.toStringAsFixed(0)} × $days days',
-            style:
-                const TextStyle(color: AppColors.primaryPurple, fontSize: 13),
-          ),
-          const Spacer(),
-          Text(
-            'Total: ₹${total.toStringAsFixed(0)}',
-            style: const TextStyle(
+        child: Row(
+          children: [
+            const Icon(
+              Icons.calculate_outlined,
               color: AppColors.primaryPurple,
-              fontWeight: FontWeight.w800,
-              fontSize: 15,
+              size: 18,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(width: 8),
+            Text(
+              '₹${price.toStringAsFixed(0)} × $days days',
+              style:
+                  const TextStyle(color: AppColors.primaryPurple, fontSize: 13),
+            ),
+            const Spacer(),
+            Text(
+              'Total: ₹${total.toStringAsFixed(0)}',
+              style: const TextStyle(
+                color: AppColors.primaryPurple,
+                fontWeight: FontWeight.w800,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 class _MediaPickerButton extends StatelessWidget {
@@ -512,55 +511,53 @@ class _MediaPickerButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: 100,
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primaryPurple.withValues(alpha: 0.12)
-              : (isDark ? AppColors.darkCard : AppColors.lightCard),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: 100,
+          decoration: BoxDecoration(
             color: selected
-                ? AppColors.primaryPurple
-                : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
-            width: selected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 28,
+                ? AppColors.primaryPurple.withValues(alpha: 0.12)
+                : (isDark ? AppColors.darkCard : AppColors.lightCard),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
               color: selected
                   ? AppColors.primaryPurple
-                  : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                  : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
+              width: selected ? 2 : 1,
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 28,
                 color: selected
                     ? AppColors.primaryPurple
                     : (isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: selected
+                      ? AppColors.primaryPurple
+                      : (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class _MediaThumbnail extends StatelessWidget {
@@ -577,55 +574,53 @@ class _MediaThumbnail extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: mediaType == 'image'
-              ? Image.file(
-                  file,
-                  height: 160,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                )
-              : Container(
-                  height: 160,
-                  width: double.infinity,
-                  color: isDark ? AppColors.darkCard : AppColors.lightCard,
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.videocam_rounded,
-                        size: 48,
-                        color: AppColors.primaryPurple,
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Video uploaded',
-                        style: TextStyle(color: AppColors.primaryPurple),
-                      ),
-                    ],
+  Widget build(BuildContext context) => Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: mediaType == 'image'
+                ? Image.file(
+                    file,
+                    height: 160,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    height: 160,
+                    width: double.infinity,
+                    color: isDark ? AppColors.darkCard : AppColors.lightCard,
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.videocam_rounded,
+                          size: 48,
+                          color: AppColors.primaryPurple,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Video uploaded',
+                          style: TextStyle(color: AppColors.primaryPurple),
+                        ),
+                      ],
+                    ),
                   ),
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: AppColors.error,
+                  shape: BoxShape.circle,
                 ),
-        ),
-        Positioned(
-          top: 8,
-          right: 8,
-          child: GestureDetector(
-            onTap: onRemove,
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: const BoxDecoration(
-                color: AppColors.error,
-                shape: BoxShape.circle,
+                child: const Icon(Icons.close, size: 14, color: Colors.white),
               ),
-              child: const Icon(Icons.close, size: 14, color: Colors.white),
             ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }

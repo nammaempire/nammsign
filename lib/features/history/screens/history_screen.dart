@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../models/advertisement_model.dart';
-import '../../../providers/advertisement_provider.dart';
+import 'package:signage_app/core/constants/app_colors.dart';
+import 'package:signage_app/core/constants/app_strings.dart';
+import 'package:signage_app/models/advertisement_model.dart';
+import 'package:signage_app/providers/advertisement_provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -311,8 +311,11 @@ class _AdHistoryCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline,
-                            color: AppColors.error, size: 14),
+                        const Icon(
+                          Icons.error_outline,
+                          color: AppColors.error,
+                          size: 14,
+                        ),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -335,9 +338,7 @@ class _AdHistoryCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime dt) {
-    return '${dt.day}/${dt.month}/${dt.year}';
-  }
+  String _formatDate(DateTime dt) => '${dt.day}/${dt.month}/${dt.year}';
 }
 
 class _MiniStat extends StatelessWidget {
@@ -352,30 +353,28 @@ class _MiniStat extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 11, color: AppColors.primaryPurple),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryPurple,
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 11, color: AppColors.primaryPurple),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryPurple,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 // ── Empty State ───────────────────────────────────────────────────────────────
@@ -384,56 +383,55 @@ class _EmptyHistory extends StatelessWidget {
   const _EmptyHistory({required this.isDark});
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: AppColors.primaryPurple.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(24),
+  Widget build(BuildContext context) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryPurple.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: const Icon(
+                  Icons.history_rounded,
+                  size: 48,
+                  color: AppColors.primaryPurple,
+                ),
               ),
-              child: const Icon(
-                Icons.history_rounded,
-                size: 48,
-                color: AppColors.primaryPurple,
+              const SizedBox(height: 24),
+              Text(
+                AppStrings.noAds,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              AppStrings.noAds,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppStrings.noAdsDesc,
-              style: TextStyle(
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-                fontSize: 14,
+              const SizedBox(height: 8),
+              Text(
+                AppStrings.noAdsDesc,
+                style: TextStyle(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 28),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Create Your First Ad'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryPurple,
+              const SizedBox(height: 28),
+              ElevatedButton.icon(
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/home'),
+                icon: const Icon(Icons.add_rounded),
+                label: const Text('Create Your First Ad'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryPurple,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
