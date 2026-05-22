@@ -16,7 +16,7 @@ class AuthService {
   factory AuthService() => _instance;
   AuthService._internal();
 
-  final FirebaseAuth _auth   = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _google = GoogleSignIn(scopes: ['email', 'profile']);
 
   /// Stored after `sendOtp` returns; consumed by `verifyOtp`.
@@ -45,22 +45,22 @@ class AuthService {
 
   Future<void> saveUserData(Map<String, dynamic> user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_uid',      user['uid']      ?? '');
-    await prefs.setString('user_name',     user['name']     ?? '');
-    await prefs.setString('user_email',    user['email']    ?? '');
-    await prefs.setString('user_phone',    user['phone']    ?? '');
-    await prefs.setString('user_type',     user['type']     ?? '');
+    await prefs.setString('user_uid', user['uid'] ?? '');
+    await prefs.setString('user_name', user['name'] ?? '');
+    await prefs.setString('user_email', user['email'] ?? '');
+    await prefs.setString('user_phone', user['phone'] ?? '');
+    await prefs.setString('user_type', user['type'] ?? '');
     await prefs.setBool('onboarding_done', user['onboarding_done'] ?? false);
   }
 
   Future<Map<String, dynamic>> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
-      'uid':             prefs.getString('user_uid')   ?? '',
-      'name':            prefs.getString('user_name')  ?? '',
-      'email':           prefs.getString('user_email') ?? '',
-      'phone':           prefs.getString('user_phone') ?? '',
-      'type':            prefs.getString('user_type')  ?? '',
+      'uid': prefs.getString('user_uid') ?? '',
+      'name': prefs.getString('user_name') ?? '',
+      'email': prefs.getString('user_email') ?? '',
+      'phone': prefs.getString('user_phone') ?? '',
+      'type': prefs.getString('user_type') ?? '',
       'onboarding_done': prefs.getBool('onboarding_done') ?? false,
     };
   }
@@ -143,9 +143,8 @@ class AuthService {
       // For brand-new Firebase users we always send them through onboarding.
       // Returning users keep the locally-stored onboarding flag.
       final prefs = await SharedPreferences.getInstance();
-      final onboardingDone = isNewUser
-          ? false
-          : (prefs.getBool('onboarding_done') ?? false);
+      final onboardingDone =
+          isNewUser ? false : (prefs.getBool('onboarding_done') ?? false);
 
       return AuthResult(
         success: true,
@@ -179,9 +178,8 @@ class AuthService {
       await _persistFirebaseUser();
 
       final prefs = await SharedPreferences.getInstance();
-      final onboardingDone = isNewUser
-          ? false
-          : (prefs.getBool('onboarding_done') ?? false);
+      final onboardingDone =
+          isNewUser ? false : (prefs.getBool('onboarding_done') ?? false);
 
       return AuthResult(
         success: true,
@@ -227,8 +225,8 @@ class AuthService {
     if (idToken != null) await saveToken(idToken);
 
     await saveUserData({
-      'uid':   user.uid,
-      'name':  user.displayName ?? '',
+      'uid': user.uid,
+      'name': user.displayName ?? '',
       'email': user.email ?? '',
       'phone': phone ?? (user.phoneNumber ?? ''),
       // Preserve existing onboarding flag — do not overwrite.
@@ -262,8 +260,8 @@ class AuthService {
 
 // ── Result Model ──────────────────────────────────────────────────────────────
 class AuthResult {
-  final bool    success;
-  final bool    needsOnboarding;
+  final bool success;
+  final bool needsOnboarding;
   final String? message;
 
   AuthResult({

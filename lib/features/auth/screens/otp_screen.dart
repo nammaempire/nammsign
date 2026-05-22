@@ -19,9 +19,9 @@ class _OtpScreenState extends State<OtpScreen> {
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
-  Timer?  _timer;
-  int     _seconds = 60;
-  bool    _canResend = false;
+  Timer? _timer;
+  int _seconds = 60;
+  bool _canResend = false;
 
   @override
   void initState() {
@@ -42,9 +42,9 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void _startTimer() {
-    _seconds   = 60;
+    _seconds = 60;
     _canResend = false;
-    _timer     = Timer.periodic(const Duration(seconds: 1), (t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (_seconds == 0) {
         t.cancel();
         setState(() => _canResend = true);
@@ -61,7 +61,7 @@ class _OtpScreenState extends State<OtpScreen> {
       _showSnack('Please enter the complete 6-digit OTP', isError: true);
       return;
     }
-    final auth   = context.read<AuthProvider>();
+    final auth = context.read<AuthProvider>();
     final result = await auth.verifyOtp(widget.phone, _otp);
     if (!mounted) return;
 
@@ -81,7 +81,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> _resendOtp() async {
-    final auth    = context.read<AuthProvider>();
+    final auth = context.read<AuthProvider>();
     final success = await auth.sendOtp(widget.phone);
     if (!mounted) return;
     if (success) {
@@ -95,9 +95,9 @@ class _OtpScreenState extends State<OtpScreen> {
   void _showSnack(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:         Text(msg),
+        content: Text(msg),
         backgroundColor: isError ? AppColors.error : AppColors.success,
-        behavior:        SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
@@ -117,14 +117,14 @@ class _OtpScreenState extends State<OtpScreen> {
   // ── UI ────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final theme  = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.verifyOtp),
         leading: IconButton(
-          icon:     const Icon(Icons.arrow_back_ios_rounded),
+          icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -156,7 +156,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     text: '+91 ${widget.phone}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
-                      color:      AppColors.primaryPurple,
+                      color: AppColors.primaryPurple,
                     ),
                   ),
                 ],
@@ -171,9 +171,9 @@ class _OtpScreenState extends State<OtpScreen> {
                 6,
                 (i) => _OtpBox(
                   controller: _controllers[i],
-                  focusNode:  _focusNodes[i],
-                  onChanged:  (v) => _onChanged(v, i),
-                  isDark:     isDark,
+                  focusNode: _focusNodes[i],
+                  onChanged: (v) => _onChanged(v, i),
+                  isDark: isDark,
                 ),
               ),
             ),
@@ -183,30 +183,30 @@ class _OtpScreenState extends State<OtpScreen> {
             Consumer<AuthProvider>(
               builder: (_, auth, __) => ElevatedButton(
                 onPressed: auth.isLoading ? null : _verifyOtp,
-                style:     ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                 child: Ink(
                   decoration: BoxDecoration(
-                    gradient:     AppColors.primaryGradient,
+                    gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Container(
-                    height:    54,
+                    height: 54,
                     alignment: Alignment.center,
                     child: auth.isLoading
                         ? const SizedBox(
-                            width:  22,
+                            width: 22,
                             height: 22,
                             child: CircularProgressIndicator(
-                              color:       Colors.white,
+                              color: Colors.white,
                               strokeWidth: 2.5,
                             ),
                           )
                         : const Text(
                             AppStrings.verifyOtp,
                             style: TextStyle(
-                              fontSize:   16,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color:      Colors.white,
+                              color: Colors.white,
                             ),
                           ),
                   ),
@@ -223,7 +223,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       child: const Text(
                         AppStrings.resendOtp,
                         style: TextStyle(
-                          color:      AppColors.primaryPurple,
+                          color: AppColors.primaryPurple,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -247,9 +247,9 @@ class _OtpScreenState extends State<OtpScreen> {
 // ── Single OTP Input Box ──────────────────────────────────────────────────────
 class _OtpBox extends StatelessWidget {
   final TextEditingController controller;
-  final FocusNode             focusNode;
-  final ValueChanged<String>  onChanged;
-  final bool                  isDark;
+  final FocusNode focusNode;
+  final ValueChanged<String> onChanged;
+  final bool isDark;
 
   const _OtpBox({
     required this.controller,
@@ -261,25 +261,24 @@ class _OtpBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width:  50,
+      width: 50,
       height: 58,
       child: TextField(
-        controller:       controller,
-        focusNode:        focusNode,
-        textAlign:        TextAlign.center,
-        keyboardType:     TextInputType.number,
-        maxLength:        1,
-        inputFormatters:  [FilteringTextInputFormatter.digitsOnly],
-        onChanged:        onChanged,
+        controller: controller,
+        focusNode: focusNode,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        maxLength: 1,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        onChanged: onChanged,
         style: TextStyle(
-          fontSize:   22,
+          fontSize: 22,
           fontWeight: FontWeight.w700,
-          color: isDark
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
+          color:
+              isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
         ),
         decoration: InputDecoration(
-          counterText:   '',
+          counterText: '',
           contentPadding: EdgeInsets.zero,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
@@ -295,7 +294,7 @@ class _OtpBox extends StatelessWidget {
             ),
           ),
           fillColor: isDark ? AppColors.darkCard : AppColors.lightCard,
-          filled:    true,
+          filled: true,
         ),
       ),
     );

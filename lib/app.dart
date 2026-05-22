@@ -16,16 +16,16 @@ class SignageApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (_, themeProvider, __) {
         return MaterialApp(
-          title:              AppStrings.appName,
+          title: AppStrings.appName,
           debugShowCheckedModeBanner: false,
-          themeMode:          themeProvider.themeMode,
-          theme:              AppTheme.lightTheme,
-          darkTheme:          AppTheme.darkTheme,
-          home:               const _SplashRouter(),
+          themeMode: themeProvider.themeMode,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          home: const _SplashRouter(),
           routes: {
-            '/login':      (_) => const LoginScreen(),
+            '/login': (_) => const LoginScreen(),
             '/onboarding': (_) => const OnboardingScreen(),
-            '/home':       (_) => const HomeScreen(),
+            '/home': (_) => const HomeScreen(),
           },
         );
       },
@@ -44,17 +44,17 @@ class _SplashRouter extends StatefulWidget {
 class _SplashRouterState extends State<_SplashRouter>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
-  late Animation<double>   _fadeAnim;
-  late Animation<double>   _scaleAnim;
+  late Animation<double> _fadeAnim;
+  late Animation<double> _scaleAnim;
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-      vsync:    this,
+      vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _fadeAnim  = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
+    _fadeAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _scaleAnim = Tween<double>(begin: 0.7, end: 1.0).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut),
     );
@@ -72,7 +72,7 @@ class _SplashRouterState extends State<_SplashRouter>
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
 
-    final auth     = context.read<AuthProvider>();
+    final auth = context.read<AuthProvider>();
     final loggedIn = await auth.checkAuth();
 
     if (!mounted) return;
@@ -90,15 +90,13 @@ class _SplashRouterState extends State<_SplashRouter>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF0F0A1E), Color(0xFF1A0050), Color(0xFF0F0A1E)],
-            begin:  Alignment.topLeft,
-            end:    Alignment.bottomRight,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Center(
@@ -111,17 +109,17 @@ class _SplashRouterState extends State<_SplashRouter>
                 children: [
                   // ── Logo ─────────────────────────────────────────────
                   Container(
-                    width:   180,
-                    height:  180,
+                    width: 180,
+                    height: 180,
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color:        Colors.white,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color:      const Color(0xFF7C3AED).withOpacity(0.5),
+                          color: const Color(0xFF7C3AED).withValues(alpha: 0.5),
                           blurRadius: 30,
-                          offset:     const Offset(0, 10),
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
@@ -136,8 +134,8 @@ class _SplashRouterState extends State<_SplashRouter>
                   const Text(
                     AppStrings.appName,
                     style: TextStyle(
-                      color:      Colors.white,
-                      fontSize:   32,
+                      color: Colors.white,
+                      fontSize: 32,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.5,
                     ),
@@ -146,7 +144,7 @@ class _SplashRouterState extends State<_SplashRouter>
                   const Text(
                     AppStrings.tagline,
                     style: TextStyle(
-                      color:   Colors.white54,
+                      color: Colors.white54,
                       fontSize: 14,
                     ),
                   ),
@@ -154,10 +152,10 @@ class _SplashRouterState extends State<_SplashRouter>
 
                   // ── Loading indicator ─────────────────────────────────
                   const SizedBox(
-                    width:  24,
+                    width: 24,
                     height: 24,
                     child: CircularProgressIndicator(
-                      color:       Color(0xFFA855F7),
+                      color: Color(0xFFA855F7),
                       strokeWidth: 2.5,
                     ),
                   ),

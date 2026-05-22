@@ -10,14 +10,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme       = Theme.of(context);
-    final isDark      = theme.brightness == Brightness.dark;
-    final auth        = context.watch<AuthProvider>();
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final auth = context.watch<AuthProvider>();
     final themeProvider = context.watch<ThemeProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title:                    const Text(AppStrings.profile),
+        title: const Text(AppStrings.profile),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -26,10 +26,11 @@ class ProfileScreen extends StatelessWidget {
           children: [
             // ── Avatar & Name ─────────────────────────────────────────
             _ProfileHeader(
-              name:   auth.userName.isNotEmpty ? auth.userName : 'SignageAds User',
-              phone:  auth.userPhone,
-              email:  auth.userEmail,
-              type:   auth.userType,
+              name:
+                  auth.userName.isNotEmpty ? auth.userName : 'SignageAds User',
+              phone: auth.userPhone,
+              email: auth.userEmail,
+              type: auth.userType,
               isDark: isDark,
             ),
             const SizedBox(height: 24),
@@ -39,27 +40,27 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _StatCard(
-                    value:  '3',
-                    label:  'Total Ads',
-                    icon:   Icons.tv_rounded,
+                    value: '3',
+                    label: 'Total Ads',
+                    icon: Icons.tv_rounded,
                     isDark: isDark,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _StatCard(
-                    value:  '1',
-                    label:  'Live Now',
-                    icon:   Icons.live_tv_rounded,
+                    value: '1',
+                    label: 'Live Now',
+                    icon: Icons.live_tv_rounded,
                     isDark: isDark,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _StatCard(
-                    value:  '₹8.1K',
-                    label:  'Spent',
-                    icon:   Icons.currency_rupee_rounded,
+                    value: '₹8.1K',
+                    label: 'Spent',
+                    icon: Icons.currency_rupee_rounded,
                     isDark: isDark,
                   ),
                 ),
@@ -73,32 +74,32 @@ class ProfileScreen extends StatelessWidget {
 
             // Theme Toggle
             _SettingsTile(
-              icon:     themeProvider.isDark
+              icon: themeProvider.isDark
                   ? Icons.wb_sunny_rounded
                   : Icons.nightlight_round,
               iconColor: AppColors.primaryPurple,
-              title:    themeProvider.isDark
+              title: themeProvider.isDark
                   ? AppStrings.lightMode
                   : AppStrings.darkMode,
               subtitle: 'Switch app appearance',
               trailing: Switch.adaptive(
-                value:         themeProvider.isDark,
-                onChanged:     (_) => themeProvider.toggleTheme(),
-                activeColor:   AppColors.primaryPurple,
+                value: themeProvider.isDark,
+                onChanged: (_) => themeProvider.toggleTheme(),
+                activeThumbColor: AppColors.primaryPurple,
               ),
-              onTap:    themeProvider.toggleTheme,
-              isDark:   isDark,
+              onTap: themeProvider.toggleTheme,
+              isDark: isDark,
             ),
             const SizedBox(height: 8),
 
             _SettingsTile(
-              icon:      Icons.notifications_outlined,
+              icon: Icons.notifications_outlined,
               iconColor: AppColors.info,
-              title:     'Notifications',
-              subtitle:  'Ad status, updates & more',
-              trailing:  const Icon(Icons.chevron_right_rounded),
-              onTap:     () {},
-              isDark:    isDark,
+              title: 'Notifications',
+              subtitle: 'Ad status, updates & more',
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+              isDark: isDark,
             ),
             const SizedBox(height: 24),
 
@@ -107,41 +108,40 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             _SettingsTile(
-              icon:      Icons.person_outline_rounded,
+              icon: Icons.person_outline_rounded,
               iconColor: AppColors.primaryPurple,
-              title:     'Edit Profile',
-              subtitle:  'Update your personal information',
-              trailing:  const Icon(Icons.chevron_right_rounded),
-              onTap:     () {},
-              isDark:    isDark,
+              title: 'Edit Profile',
+              subtitle: 'Update your personal information',
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+              isDark: isDark,
             ),
             const SizedBox(height: 8),
 
             _SettingsTile(
-              icon:      Icons.receipt_long_outlined,
+              icon: Icons.receipt_long_outlined,
               iconColor: AppColors.success,
-              title:     'Payment History',
-              subtitle:  'View all transactions',
-              trailing:  const Icon(Icons.chevron_right_rounded),
-              onTap:     () {},
-              isDark:    isDark,
+              title: 'Payment History',
+              subtitle: 'View all transactions',
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+              isDark: isDark,
             ),
             const SizedBox(height: 8),
 
             _SettingsTile(
-              icon:      Icons.verified_user_outlined,
+              icon: Icons.verified_user_outlined,
               iconColor: AppColors.info,
-              title:     'Verification Status',
-              subtitle:  auth.onboardingDone
+              title: 'Verification Status',
+              subtitle: auth.onboardingDone
                   ? 'Your account is verified'
                   : 'Complete verification',
-              trailing:  Icon(
+              trailing: Icon(
                 auth.onboardingDone
                     ? Icons.check_circle_rounded
                     : Icons.warning_rounded,
-                color: auth.onboardingDone
-                    ? AppColors.success
-                    : AppColors.warning,
+                color:
+                    auth.onboardingDone ? AppColors.success : AppColors.warning,
               ),
               onTap: auth.onboardingDone
                   ? null
@@ -155,24 +155,24 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             _SettingsTile(
-              icon:      Icons.help_outline_rounded,
+              icon: Icons.help_outline_rounded,
               iconColor: AppColors.warning,
-              title:     'Help & FAQ',
-              subtitle:  'Get answers to common questions',
-              trailing:  const Icon(Icons.chevron_right_rounded),
-              onTap:     () {},
-              isDark:    isDark,
+              title: 'Help & FAQ',
+              subtitle: 'Get answers to common questions',
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+              isDark: isDark,
             ),
             const SizedBox(height: 8),
 
             _SettingsTile(
-              icon:      Icons.policy_outlined,
+              icon: Icons.policy_outlined,
               iconColor: AppColors.darkTextSecondary,
-              title:     'Privacy Policy',
-              subtitle:  'Read our privacy policy',
-              trailing:  const Icon(Icons.chevron_right_rounded),
-              onTap:     () {},
-              isDark:    isDark,
+              title: 'Privacy Policy',
+              subtitle: 'Read our privacy policy',
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+              isDark: isDark,
             ),
             const SizedBox(height: 24),
 
@@ -180,12 +180,12 @@ class ProfileScreen extends StatelessWidget {
             GestureDetector(
               onTap: () => _showLogoutDialog(context, auth),
               child: Container(
-                padding:    const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color:        AppColors.error.withOpacity(0.08),
+                  color: AppColors.error.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(16),
-                  border:       Border.all(
-                    color: AppColors.error.withOpacity(0.2),
+                  border: Border.all(
+                    color: AppColors.error.withValues(alpha: 0.2),
                   ),
                 ),
                 child: const Row(
@@ -196,9 +196,9 @@ class ProfileScreen extends StatelessWidget {
                     Text(
                       AppStrings.logout,
                       style: TextStyle(
-                        color:      AppColors.error,
+                        color: AppColors.error,
                         fontWeight: FontWeight.w700,
-                        fontSize:   15,
+                        fontSize: 15,
                       ),
                     ),
                   ],
@@ -229,13 +229,13 @@ class ProfileScreen extends StatelessWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title:   const Text('Logout'),
+        title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child:     const Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
@@ -261,7 +261,7 @@ class _ProfileHeader extends StatelessWidget {
   final String phone;
   final String email;
   final String type;
-  final bool   isDark;
+  final bool isDark;
 
   const _ProfileHeader({
     required this.name,
@@ -274,29 +274,29 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:    const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient:     AppColors.primaryGradient,
+        gradient: AppColors.primaryGradient,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color:      AppColors.primaryPurple.withOpacity(0.3),
+            color: AppColors.primaryPurple.withValues(alpha: 0.3),
             blurRadius: 20,
-            offset:     const Offset(0, 6),
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Row(
         children: [
           CircleAvatar(
-            radius:          34,
-            backgroundColor: Colors.white.withOpacity(0.2),
+            radius: 34,
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : 'U',
               style: const TextStyle(
-                fontSize:   28,
+                fontSize: 28,
                 fontWeight: FontWeight.w800,
-                color:      Colors.white,
+                color: Colors.white,
               ),
             ),
           ),
@@ -308,9 +308,9 @@ class _ProfileHeader extends StatelessWidget {
                 Text(
                   name,
                   style: const TextStyle(
-                    color:      Colors.white,
+                    color: Colors.white,
                     fontWeight: FontWeight.w700,
-                    fontSize:   18,
+                    fontSize: 18,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -320,7 +320,7 @@ class _ProfileHeader extends StatelessWidget {
                   Text(
                     '+91 $phone',
                     style: const TextStyle(
-                      color:   Colors.white70,
+                      color: Colors.white70,
                       fontSize: 13,
                     ),
                   ),
@@ -330,7 +330,7 @@ class _ProfileHeader extends StatelessWidget {
                   Text(
                     email,
                     style: const TextStyle(
-                      color:   Colors.white60,
+                      color: Colors.white60,
                       fontSize: 12,
                     ),
                     maxLines: 1,
@@ -339,10 +339,10 @@ class _ProfileHeader extends StatelessWidget {
                 ],
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                   decoration: BoxDecoration(
-                    color:        Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -350,8 +350,8 @@ class _ProfileHeader extends StatelessWidget {
                         ? type[0].toUpperCase() + type.substring(1)
                         : 'Individual',
                     style: const TextStyle(
-                      color:      Colors.white,
-                      fontSize:   11,
+                      color: Colors.white,
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -367,10 +367,10 @@ class _ProfileHeader extends StatelessWidget {
 
 // ── Stat Card ─────────────────────────────────────────────────────────────────
 class _StatCard extends StatelessWidget {
-  final String   value;
-  final String   label;
+  final String value;
+  final String label;
   final IconData icon;
-  final bool     isDark;
+  final bool isDark;
 
   const _StatCard({
     required this.value,
@@ -382,11 +382,11 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:    const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+        color: isDark ? AppColors.darkCard : AppColors.lightCard,
         borderRadius: BorderRadius.circular(14),
-        border:       Border.all(
+        border: Border.all(
           color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
         ),
       ),
@@ -398,8 +398,8 @@ class _StatCard extends StatelessWidget {
             value,
             style: const TextStyle(
               fontWeight: FontWeight.w800,
-              fontSize:   16,
-              color:      AppColors.primaryPurple,
+              fontSize: 16,
+              color: AppColors.primaryPurple,
             ),
           ),
           const SizedBox(height: 2),
@@ -422,7 +422,7 @@ class _StatCard extends StatelessWidget {
 // ── Section Header ────────────────────────────────────────────────────────────
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final bool   isDark;
+  final bool isDark;
 
   const _SectionHeader({required this.title, required this.isDark});
 
@@ -433,7 +433,7 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          fontSize:   12,
+          fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 1,
           color: isDark
@@ -447,13 +447,13 @@ class _SectionHeader extends StatelessWidget {
 
 // ── Settings Tile ─────────────────────────────────────────────────────────────
 class _SettingsTile extends StatelessWidget {
-  final IconData    icon;
-  final Color       iconColor;
-  final String      title;
-  final String      subtitle;
-  final Widget      trailing;
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final Widget trailing;
   final VoidCallback? onTap;
-  final bool        isDark;
+  final bool isDark;
 
   const _SettingsTile({
     required this.icon,
@@ -470,21 +470,21 @@ class _SettingsTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding:    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+          color: isDark ? AppColors.darkCard : AppColors.lightCard,
           borderRadius: BorderRadius.circular(14),
-          border:       Border.all(
+          border: Border.all(
             color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
           ),
         ),
         child: Row(
           children: [
             Container(
-              width:  40,
+              width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color:        iconColor.withOpacity(0.12),
+                color: iconColor.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, size: 20, color: iconColor),
@@ -498,7 +498,7 @@ class _SettingsTile extends StatelessWidget {
                     title,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize:   14,
+                      fontSize: 14,
                       color: isDark
                           ? AppColors.darkTextPrimary
                           : AppColors.lightTextPrimary,

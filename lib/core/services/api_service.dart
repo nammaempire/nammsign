@@ -16,14 +16,14 @@ class ApiService {
   factory ApiService() => _instance;
   ApiService._internal();
 
-  final FirebaseFirestore _db      = FirebaseFirestore.instance;
-  final FirebaseStorage   _storage = FirebaseStorage.instance;
-  final FirebaseAuth      _auth    = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String get _uid {
     final u = _auth.currentUser;
     if (u == null) {
-      throw ApiException(message: 'Not signed in', statusCode: 401);
+      throw const ApiException(message: 'Not signed in', statusCode: 401);
     }
     return u.uid;
   }
@@ -67,12 +67,12 @@ class ApiService {
     final existing = await userRef.get();
 
     final userData = <String, dynamic>{
-      'uid':              uid,
-      'account_type':     accountType,
-      'kyc_status':       'pending',
+      'uid': uid,
+      'account_type': accountType,
+      'kyc_status': 'pending',
       'kyc_document_url': docUrl,
-      'onboarding_done':  true,
-      'updated_at':       FieldValue.serverTimestamp(),
+      'onboarding_done': true,
+      'updated_at': FieldValue.serverTimestamp(),
       ...sanitizedData,
     };
 
@@ -80,7 +80,7 @@ class ApiService {
     final fbUser = _auth.currentUser!;
     if (!existing.exists) {
       userData['created_at'] = FieldValue.serverTimestamp();
-      userData.putIfAbsent('name',  () => fbUser.displayName ?? '');
+      userData.putIfAbsent('name', () => fbUser.displayName ?? '');
       userData.putIfAbsent('email', () => fbUser.email ?? '');
       userData.putIfAbsent(
         'phone',
@@ -130,14 +130,13 @@ class ApiService {
     final uid = _uid;
 
     final ext = media.path.split('.').last.toLowerCase();
-    final mediaType =
-        const ['mp4', 'mov', 'avi', 'mkv', 'webm'].contains(ext)
-            ? 'video'
-            : 'image';
+    final mediaType = const ['mp4', 'mov', 'avi', 'mkv', 'webm'].contains(ext)
+        ? 'video'
+        : 'image';
 
     // Pre-mint the advertisement ID so we can use it in the storage path
     final adRef = _db.collection('advertisements').doc();
-    final adId  = adRef.id;
+    final adId = adRef.id;
 
     final storageRef = _storage.ref('ads/$uid/$adId/media.$ext');
     await storageRef.putFile(media);
@@ -147,33 +146,32 @@ class ApiService {
     final userSnap = await _db.collection('users').doc(uid).get();
     final user = userSnap.data() ?? {};
 
-    final slotId   = data['slot_id'] as String;
+    final slotId = data['slot_id'] as String;
     final slotSnap = await _db.collection('slots').doc(slotId).get();
-    final slot     = slotSnap.data() ?? {};
+    final slot = slotSnap.data() ?? {};
 
     final duration = int.tryParse('${data['duration'] ?? '0'}') ?? 0;
     final pricePerDay = (slot['price_per_day'] as num?)?.toDouble() ?? 0.0;
     final amount = pricePerDay * duration;
 
     final adData = <String, dynamic>{
-      'id':            adId,
-      'user_id':       uid,
-      'user_name':     user['name'] ?? '',
-      'user_phone':    user['phone'] ?? '',
-      'slot_id':       slotId,
-      'slot_name':     slot['name'] ?? '',
-      'slot_location':
-          '${slot['area'] ?? ''}, ${slot['city'] ?? ''}'
-              .replaceFirst(RegExp(r'^,\s*'), ''),
-      'title':         data['title'],
-      'description':   data['description'],
-      'media_url':     mediaUrl,
-      'media_type':    mediaType,
+      'id': adId,
+      'user_id': uid,
+      'user_name': user['name'] ?? '',
+      'user_phone': user['phone'] ?? '',
+      'slot_id': slotId,
+      'slot_name': slot['name'] ?? '',
+      'slot_location': '${slot['area'] ?? ''}, ${slot['city'] ?? ''}'
+          .replaceFirst(RegExp(r'^,\s*'), ''),
+      'title': data['title'],
+      'description': data['description'],
+      'media_url': mediaUrl,
+      'media_type': mediaType,
       'duration_days': duration,
-      'amount_paid':   amount,
-      'status':        'pending',
-      'play_count':    0,
-      'created_at':    FieldValue.serverTimestamp(),
+      'amount_paid': amount,
+      'status': 'pending',
+      'play_count': 0,
+      'created_at': FieldValue.serverTimestamp(),
     };
 
     await adRef.set(adData);
@@ -204,12 +202,14 @@ class ApiService {
     final d = Map<String, dynamic>.from(doc.data());
     d['id'] = doc.id;
     if (d['created_at'] is Timestamp) {
-      d['created_at'] = (d['created_at'] as Timestamp).toDate().toIso8601String();
+      d['created_at'] =
+          (d['created_at'] as Timestamp).toDate().toIso8601String();
     } else {
       d['created_at'] ??= DateTime.now().toIso8601String();
     }
     if (d['expires_at'] is Timestamp) {
-      d['expires_at'] = (d['expires_at'] as Timestamp).toDate().toIso8601String();
+      d['expires_at'] =
+          (d['expires_at'] as Timestamp).toDate().toIso8601String();
     }
     return d;
   }
@@ -219,7 +219,7 @@ class ApiService {
   // ════════════════════════════════════════════════════════════════════════
 
   Future<Map<String, dynamic>> createOrder(Map<String, dynamic> data) async {
-    throw ApiException(
+    throw const ApiException(
       message: 'Payment integration coming in Phase 7. '
           'Cloud Functions for Razorpay are not deployed yet.',
       statusCode: 501,
@@ -227,7 +227,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> verifyPayment(Map<String, dynamic> data) async {
-    throw ApiException(
+    throw const ApiException(
       message: 'Payment integration coming in Phase 7. '
           'Cloud Functions for Razorpay are not deployed yet.',
       statusCode: 501,
@@ -260,7 +260,7 @@ class ApiService {
 // ── Custom Exception ───────────────────────────────────────────────────────
 class ApiException implements Exception {
   final String message;
-  final int    statusCode;
+  final int statusCode;
   const ApiException({required this.message, required this.statusCode});
 
   @override

@@ -70,7 +70,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1075476022217',
     projectId: 'namma-empire',
     storageBucket: 'namma-empire.firebasestorage.app',
-    iosClientId: '1075476022217-49orvcjecudcif8930vm3a4eh0fr8khj.apps.googleusercontent.com',
+    iosClientId:
+        '1075476022217-49orvcjecudcif8930vm3a4eh0fr8khj.apps.googleusercontent.com',
     iosBundleId: 'com.nammaempire.nammsign',
   );
 }

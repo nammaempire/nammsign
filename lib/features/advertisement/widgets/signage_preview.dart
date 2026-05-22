@@ -5,9 +5,9 @@ import '../../../core/constants/app_colors.dart';
 import '../../../models/ad_slot_model.dart';
 
 class SignagePreviewWidget extends StatefulWidget {
-  final File?   mediaFile;
-  final String  mediaType; // 'image' | 'video'
-  final AdSlot  slot;
+  final File? mediaFile;
+  final String mediaType; // 'image' | 'video'
+  final AdSlot slot;
 
   const SignagePreviewWidget({
     super.key,
@@ -48,8 +48,6 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -59,10 +57,10 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
           child: Row(
             children: [
               Container(
-                width:  4,
+                width: 4,
                 height: 18,
                 decoration: BoxDecoration(
-                  gradient:     AppColors.primaryGradient,
+                  gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -70,9 +68,9 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
               const Text(
                 'Preview on Signage Board',
                 style: TextStyle(
-                  fontSize:   16,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color:      AppColors.primaryPurple,
+                  color: AppColors.primaryPurple,
                 ),
               ),
             ],
@@ -82,17 +80,17 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
         // ── Signage Board Mockup ───────────────────────────────────────
         Container(
           decoration: BoxDecoration(
-            color:        AppColors.signageBoardBg,
+            color: AppColors.signageBoardBg,
             borderRadius: BorderRadius.circular(16),
-            border:       Border.all(
+            border: Border.all(
               color: AppColors.signageBoardBezel,
               width: 2,
             ),
             boxShadow: [
               BoxShadow(
-                color:      Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 blurRadius: 20,
-                offset:     const Offset(0, 6),
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -100,7 +98,7 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
             children: [
               // Top bar – control strip
               Container(
-                height:      32,
+                height: 32,
                 decoration: const BoxDecoration(
                   color: AppColors.signageBoardBezel,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
@@ -110,7 +108,7 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
                     const SizedBox(width: 12),
                     // Live LED
                     Container(
-                      width:  8,
+                      width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
                         color: AppColors.signageBoardLed,
@@ -121,8 +119,8 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
                     const Text(
                       'LIVE PREVIEW',
                       style: TextStyle(
-                        color:      AppColors.signageBoardLed,
-                        fontSize:   10,
+                        color: AppColors.signageBoardLed,
+                        fontSize: 10,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.5,
                       ),
@@ -131,7 +129,7 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
                     Text(
                       widget.slot.name,
                       style: const TextStyle(
-                        color:    Colors.white54,
+                        color: Colors.white54,
                         fontSize: 10,
                       ),
                     ),
@@ -150,7 +148,7 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
 
               // Bottom info strip
               Container(
-                height:      40,
+                height: 40,
                 decoration: const BoxDecoration(
                   color: AppColors.signageBoardBezel,
                   borderRadius: BorderRadius.vertical(
@@ -162,28 +160,28 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
                   children: [
                     const Icon(
                       Icons.location_on_rounded,
-                      size:  12,
+                      size: 12,
                       color: Colors.white54,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '${widget.slot.location} · ${widget.slot.city}',
                       style: const TextStyle(
-                        color:    Colors.white54,
+                        color: Colors.white54,
                         fontSize: 11,
                       ),
                     ),
                     const SizedBox(width: 16),
                     const Icon(
                       Icons.people_rounded,
-                      size:  12,
+                      size: 12,
                       color: Colors.white54,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       widget.slot.footTrafficLabel,
                       style: const TextStyle(
-                        color:    Colors.white54,
+                        color: Colors.white54,
                         fontSize: 11,
                       ),
                     ),
@@ -218,7 +216,9 @@ class _SignagePreviewWidgetState extends State<SignagePreviewWidget> {
         width: double.infinity,
       );
     }
-    if (widget.mediaType == 'video' && _videoInitialized && _videoCtrl != null) {
+    if (widget.mediaType == 'video' &&
+        _videoInitialized &&
+        _videoCtrl != null) {
       return VideoPlayer(_videoCtrl!);
     }
     return const Center(
@@ -238,14 +238,14 @@ class _EmptyPreview extends StatelessWidget {
         children: [
           Icon(
             Icons.image_outlined,
-            size:  48,
-            color: Colors.white.withOpacity(0.2),
+            size: 48,
+            color: Colors.white.withValues(alpha: 0.2),
           ),
           const SizedBox(height: 12),
           Text(
             'Your ad will appear here',
             style: TextStyle(
-              color:    Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               fontSize: 13,
             ),
           ),
@@ -284,16 +284,14 @@ class _VideoControlsState extends State<_VideoControls> {
               });
             },
             child: Container(
-              width:  40,
+              width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color:        AppColors.primaryPurple.withOpacity(0.12),
+                color: AppColors.primaryPurple.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
-                _isPlaying
-                    ? Icons.pause_rounded
-                    : Icons.play_arrow_rounded,
+                _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                 color: AppColors.primaryPurple,
               ),
             ),
@@ -306,8 +304,8 @@ class _VideoControlsState extends State<_VideoControls> {
               widget.controller,
               allowScrubbing: true,
               colors: const VideoProgressColors(
-                playedColor:     AppColors.primaryPurple,
-                bufferedColor:   AppColors.darkDivider,
+                playedColor: AppColors.primaryPurple,
+                bufferedColor: AppColors.darkDivider,
                 backgroundColor: AppColors.darkCard,
               ),
             ),
@@ -323,8 +321,8 @@ class _VideoControlsState extends State<_VideoControls> {
               return Text(
                 '${_fmt(position)} / ${_fmt(duration)}',
                 style: const TextStyle(
-                  fontSize:   11,
-                  color:      AppColors.darkTextSecondary,
+                  fontSize: 11,
+                  color: AppColors.darkTextSecondary,
                 ),
               );
             },

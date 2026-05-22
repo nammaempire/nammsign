@@ -6,12 +6,12 @@ enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
-  AuthStatus _status  = AuthStatus.initial;
-  String?    _error;
+  AuthStatus _status = AuthStatus.initial;
+  String? _error;
   Map<String, dynamic> _userData = {};
 
-  AuthStatus get status   => _status;
-  String?    get error    => _error;
+  AuthStatus get status => _status;
+  String? get error => _error;
   Map<String, dynamic> get userData => _userData;
   bool get isLoading => _status == AuthStatus.loading;
 
@@ -20,7 +20,7 @@ class AuthProvider extends ChangeNotifier {
     final loggedIn = await _authService.isLoggedIn();
     if (loggedIn) {
       _userData = await _authService.getUserData();
-      _status   = AuthStatus.authenticated;
+      _status = AuthStatus.authenticated;
     } else {
       _status = AuthStatus.unauthenticated;
     }
@@ -57,7 +57,7 @@ class AuthProvider extends ChangeNotifier {
       final result = await _authService.verifyOtp(phone, otp);
       if (result.success) {
         _userData = await _authService.getUserData();
-        _status   = AuthStatus.authenticated;
+        _status = AuthStatus.authenticated;
       } else {
         _setError(result.message ?? 'OTP verification failed');
       }
@@ -76,7 +76,7 @@ class AuthProvider extends ChangeNotifier {
       final result = await _authService.signInWithGoogle();
       if (result.success) {
         _userData = await _authService.getUserData();
-        _status   = AuthStatus.authenticated;
+        _status = AuthStatus.authenticated;
       } else {
         _setError(result.message ?? 'Google sign-in failed');
       }
@@ -93,32 +93,32 @@ class AuthProvider extends ChangeNotifier {
     _setLoading();
     await _authService.logout();
     _userData = {};
-    _status   = AuthStatus.unauthenticated;
+    _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   void _setLoading() {
     _status = AuthStatus.loading;
-    _error  = null;
+    _error = null;
     notifyListeners();
   }
 
   void _setError(String message) {
     _status = AuthStatus.error;
-    _error  = message;
+    _error = message;
     notifyListeners();
   }
 
   void clearError() {
-    _error  = null;
+    _error = null;
     _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
 
-  String get userName  => _userData['name']  ?? '';
+  String get userName => _userData['name'] ?? '';
   String get userEmail => _userData['email'] ?? '';
   String get userPhone => _userData['phone'] ?? '';
-  String get userType  => _userData['type']  ?? '';
+  String get userType => _userData['type'] ?? '';
   bool get onboardingDone => _userData['onboarding_done'] ?? false;
 }

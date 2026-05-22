@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../models/ad_slot_model.dart';
 import '../../../providers/advertisement_provider.dart';
 import '../../advertisement/screens/detail_screen.dart';
 import 'ad_card.dart';
@@ -15,7 +14,6 @@ class LocalTab extends StatefulWidget {
 
 class _LocalTabState extends State<LocalTab>
     with AutomaticKeepAliveClientMixin {
-
   @override
   bool get wantKeepAlive => true;
 
@@ -30,7 +28,7 @@ class _LocalTabState extends State<LocalTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final theme  = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Consumer<AdvertisementProvider>(
@@ -60,9 +58,8 @@ class _LocalTabState extends State<LocalTab>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
-                          color:        isDark
-                              ? AppColors.darkCard
-                              : AppColors.lightCard,
+                          color:
+                              isDark ? AppColors.darkCard : AppColors.lightCard,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color: isDark
@@ -107,14 +104,15 @@ class _LocalTabState extends State<LocalTab>
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color:        AppColors.primaryPurple.withOpacity(0.1),
+                              color: AppColors.primaryPurple
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text(
                               'Bangalore',
                               style: TextStyle(
-                                color:      AppColors.primaryPurple,
-                                fontSize:   12,
+                                color: AppColors.primaryPurple,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -135,7 +133,7 @@ class _LocalTabState extends State<LocalTab>
                     (context, index) {
                       final slot = slots[index];
                       return AdSlotCard(
-                        slot:  slot,
+                        slot: slot,
                         onTap: () {
                           provider.selectSlot(slot);
                           Navigator.push(

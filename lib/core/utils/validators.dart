@@ -3,7 +3,7 @@ class Validators {
 
   static String? phone(String? value) {
     if (value == null || value.isEmpty) return 'Mobile number is required';
-    if (value.length != 10)            return 'Enter a valid 10-digit number';
+    if (value.length != 10) return 'Enter a valid 10-digit number';
     if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
       return 'Enter a valid Indian mobile number';
     }
@@ -12,7 +12,7 @@ class Validators {
 
   static String? otp(String? value) {
     if (value == null || value.isEmpty) return 'OTP is required';
-    if (value.length != 6)             return 'Enter the 6-digit OTP';
+    if (value.length != 6) return 'Enter the 6-digit OTP';
     return null;
   }
 
@@ -26,8 +26,9 @@ class Validators {
   static String? aadhar(String? value) {
     if (value == null || value.isEmpty) return 'Aadhar number is required';
     final clean = value.replaceAll(' ', '').replaceAll('-', '');
-    if (clean.length != 12)            return 'Aadhar must be 12 digits';
-    if (!RegExp(r'^\d{12}$').hasMatch(clean)) return 'Enter a valid Aadhar number';
+    if (clean.length != 12) return 'Aadhar must be 12 digits';
+    if (!RegExp(r'^\d{12}$').hasMatch(clean))
+      return 'Enter a valid Aadhar number';
     return null;
   }
 

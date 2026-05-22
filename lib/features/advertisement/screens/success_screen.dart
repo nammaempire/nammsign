@@ -4,7 +4,7 @@ import '../../../core/constants/app_colors.dart';
 class SuccessScreen extends StatefulWidget {
   final String slotName;
   final double amountPaid;
-  final int    durationDays;
+  final int durationDays;
 
   const SuccessScreen({
     super.key,
@@ -20,18 +20,18 @@ class SuccessScreen extends StatefulWidget {
 class _SuccessScreenState extends State<SuccessScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
-  late Animation<double>   _scaleAnim;
-  late Animation<double>   _fadeAnim;
+  late Animation<double> _scaleAnim;
+  late Animation<double> _fadeAnim;
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
-      vsync:    this,
+      vsync: this,
       duration: const Duration(milliseconds: 700),
     );
     _scaleAnim = CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut);
-    _fadeAnim  = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
+    _fadeAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _ctrl.forward();
   }
 
@@ -43,11 +43,11 @@ class _SuccessScreenState extends State<SuccessScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme  = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return WillPopScope(
-      onWillPop: () async => false, // prevent back navigation
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -59,22 +59,22 @@ class _SuccessScreenState extends State<SuccessScreen>
                 ScaleTransition(
                   scale: _scaleAnim,
                   child: Container(
-                    width:  130,
+                    width: 130,
                     height: 130,
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
-                      shape:    BoxShape.circle,
+                      shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color:      AppColors.primaryPurple.withOpacity(0.5),
+                          color: AppColors.primaryPurple.withValues(alpha: 0.5),
                           blurRadius: 30,
-                          offset:     const Offset(0, 10),
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
                     child: const Icon(
                       Icons.check_rounded,
-                      size:  65,
+                      size: 65,
                       color: Colors.white,
                     ),
                   ),
@@ -113,33 +113,35 @@ class _SuccessScreenState extends State<SuccessScreen>
                 FadeTransition(
                   opacity: _fadeAnim,
                   child: Container(
-                    width:       double.infinity,
-                    padding:     const EdgeInsets.all(20),
-                    decoration:  BoxDecoration(
-                      color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkCard : AppColors.lightCard,
                       borderRadius: BorderRadius.circular(20),
-                      border:       Border.all(
-                        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.darkDivider
+                            : AppColors.lightDivider,
                       ),
                     ),
                     child: Column(
                       children: [
                         _InfoRow(
-                          icon:  Icons.tv_rounded,
+                          icon: Icons.tv_rounded,
                           label: 'Slot',
                           value: widget.slotName,
                           isDark: isDark,
                         ),
                         const SizedBox(height: 14),
                         _InfoRow(
-                          icon:  Icons.date_range_rounded,
+                          icon: Icons.date_range_rounded,
                           label: 'Duration',
                           value: '${widget.durationDays} Days',
                           isDark: isDark,
                         ),
                         const SizedBox(height: 14),
                         _InfoRow(
-                          icon:  Icons.currency_rupee_rounded,
+                          icon: Icons.currency_rupee_rounded,
                           label: 'Amount Paid',
                           value: '₹${widget.amountPaid.toStringAsFixed(0)}',
                           isDark: isDark,
@@ -152,12 +154,12 @@ class _SuccessScreenState extends State<SuccessScreen>
 
                 // ── Status Banner ───────────────────────────────────────
                 Container(
-                  padding:    const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color:        AppColors.statusPending.withOpacity(0.12),
+                    color: AppColors.statusPending.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14),
-                    border:       Border.all(
-                      color: AppColors.statusPending.withOpacity(0.3),
+                    border: Border.all(
+                      color: AppColors.statusPending.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
@@ -174,16 +176,17 @@ class _SuccessScreenState extends State<SuccessScreen>
                             const Text(
                               'Status: Pending Approval',
                               style: TextStyle(
-                                color:      AppColors.statusPending,
+                                color: AppColors.statusPending,
                                 fontWeight: FontWeight.w700,
-                                fontSize:   13,
+                                fontSize: 13,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               'Usually takes 2–4 hours. We\'ll notify you!',
                               style: TextStyle(
-                                color:   AppColors.statusPending.withOpacity(0.8),
+                                color: AppColors.statusPending
+                                    .withValues(alpha: 0.8),
                                 fontSize: 12,
                               ),
                             ),
@@ -202,10 +205,10 @@ class _SuccessScreenState extends State<SuccessScreen>
                     '/home',
                     (route) => false,
                   ),
-                  icon:  const Icon(Icons.home_rounded),
+                  icon: const Icon(Icons.home_rounded),
                   label: const Text('Back to Home'),
                   style: ElevatedButton.styleFrom(
-                    padding:     EdgeInsets.zero,
+                    padding: EdgeInsets.zero,
                     minimumSize: const Size(double.infinity, 52),
                     backgroundColor: AppColors.primaryPurple,
                   ),
@@ -218,7 +221,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                     (route) => false,
                     arguments: 1, // navigate to History tab
                   ),
-                  icon:  const Icon(Icons.history_rounded),
+                  icon: const Icon(Icons.history_rounded),
                   label: const Text('View My Ads'),
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 52),
@@ -235,9 +238,9 @@ class _SuccessScreenState extends State<SuccessScreen>
 
 class _InfoRow extends StatelessWidget {
   final IconData icon;
-  final String   label;
-  final String   value;
-  final bool     isDark;
+  final String label;
+  final String value;
+  final bool isDark;
 
   const _InfoRow({
     required this.icon,
@@ -251,10 +254,10 @@ class _InfoRow extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width:  36,
+          width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color:        AppColors.primaryPurple.withOpacity(0.1),
+            color: AppColors.primaryPurple.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 18, color: AppColors.primaryPurple),
@@ -275,7 +278,7 @@ class _InfoRow extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
-                fontSize:   14,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: isDark
                     ? AppColors.darkTextPrimary

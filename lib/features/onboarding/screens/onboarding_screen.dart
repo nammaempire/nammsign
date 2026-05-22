@@ -17,19 +17,19 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final _formKey      = GlobalKey<FormState>();
-  String  _accountType = 'individual'; // 'individual' | 'corporate'
-  File?   _document;
+  final _formKey = GlobalKey<FormState>();
+  String _accountType = 'individual'; // 'individual' | 'corporate'
+  File? _document;
   String? _documentName;
-  bool    _isSubmitting = false;
+  bool _isSubmitting = false;
 
   // Corporate fields
   final _companyCtrl = TextEditingController();
-  final _gstCtrl     = TextEditingController();
+  final _gstCtrl = TextEditingController();
 
   // Individual fields
-  final _nameCtrl    = TextEditingController();
-  final _aadharCtrl  = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _aadharCtrl = TextEditingController();
 
   @override
   void dispose() {
@@ -43,12 +43,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // ── Pick Document ─────────────────────────────────────────────────────────
   Future<void> _pickDocument() async {
     final result = await FilePicker.platform.pickFiles(
-      type:           FileType.custom,
+      type: FileType.custom,
       allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
     );
     if (result != null && result.files.single.path != null) {
       setState(() {
-        _document     = File(result.files.single.path!);
+        _document = File(result.files.single.path!);
         _documentName = result.files.single.name;
       });
     }
@@ -65,21 +65,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      final api  = ApiService();
+      final api = ApiService();
       final data = _accountType == 'corporate'
           ? {
               'company_name': _companyCtrl.text.trim(),
-              'gst_number':   _gstCtrl.text.trim().toUpperCase(),
+              'gst_number': _gstCtrl.text.trim().toUpperCase(),
             }
           : {
-              'full_name':     _nameCtrl.text.trim(),
+              'full_name': _nameCtrl.text.trim(),
               'aadhar_number': _aadharCtrl.text.trim().replaceAll(' ', ''),
             };
 
       await api.submitOnboarding(
         accountType: _accountType,
-        data:        data,
-        document:    _document,
+        data: data,
+        document: _document,
       );
 
       if (!mounted) return;
@@ -95,9 +95,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:         Text(msg),
+        content: Text(msg),
         backgroundColor: AppColors.error,
-        behavior:        SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
@@ -106,18 +106,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // ── UI ────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final theme  = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title:           const Text('Verification'),
+        title: const Text('Verification'),
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
             onPressed: () => context.read<AuthProvider>().logout().then(
-                  (_) => Navigator.pushReplacementNamed(context, '/login'),
-                ),
+              (_) {
+                if (!context.mounted) return;
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
             child: const Text(
               'Logout',
               style: TextStyle(color: AppColors.error),
@@ -155,23 +158,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   Expanded(
                     child: _TypeCard(
-                      icon:     Icons.person_rounded,
-                      title:    AppStrings.individual,
+                      icon: Icons.person_rounded,
+                      title: AppStrings.individual,
                       subtitle: AppStrings.individualDesc,
                       selected: _accountType == 'individual',
-                      onTap:    () => setState(() => _accountType = 'individual'),
-                      isDark:   isDark,
+                      onTap: () => setState(() => _accountType = 'individual'),
+                      isDark: isDark,
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: _TypeCard(
-                      icon:     Icons.business_rounded,
-                      title:    AppStrings.corporate,
+                      icon: Icons.business_rounded,
+                      title: AppStrings.corporate,
                       subtitle: AppStrings.corporateDesc,
                       selected: _accountType == 'corporate',
-                      onTap:    () => setState(() => _accountType = 'corporate'),
-                      isDark:   isDark,
+                      onTap: () => setState(() => _accountType = 'corporate'),
+                      isDark: isDark,
                     ),
                   ),
                 ],
@@ -180,20 +183,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
               // ── Dynamic Form Fields ───────────────────────────────────
               AnimatedSwitcher(
-                duration:       const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 transitionBuilder: (child, anim) => FadeTransition(
                   opacity: anim,
                   child: child,
                 ),
                 child: _accountType == 'corporate'
                     ? _CorporateFields(
-                        key:         const ValueKey('corporate'),
+                        key: const ValueKey('corporate'),
                         companyCtrl: _companyCtrl,
-                        gstCtrl:     _gstCtrl,
+                        gstCtrl: _gstCtrl,
                       )
                     : _IndividualFields(
-                        key:        const ValueKey('individual'),
-                        nameCtrl:   _nameCtrl,
+                        key: const ValueKey('individual'),
+                        nameCtrl: _nameCtrl,
                         aadharCtrl: _aadharCtrl,
                       ),
               ),
@@ -202,44 +205,42 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               // ── Document Upload ───────────────────────────────────────
               _DocumentUploadCard(
                 documentName: _documentName,
-                accountType:  _accountType,
-                onTap:        _pickDocument,
-                isDark:       isDark,
+                accountType: _accountType,
+                onTap: _pickDocument,
+                isDark: isDark,
               ),
               const SizedBox(height: 32),
 
               // ── Submit Button ─────────────────────────────────────────
               ElevatedButton(
                 onPressed: _isSubmitting ? null : _submit,
-                style:     ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                 child: Ink(
                   decoration: BoxDecoration(
-                    gradient:     _isSubmitting
-                        ? null
-                        : AppColors.primaryGradient,
-                    color:        _isSubmitting
+                    gradient: _isSubmitting ? null : AppColors.primaryGradient,
+                    color: _isSubmitting
                         ? (isDark ? AppColors.darkCard : AppColors.lightDivider)
                         : null,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Container(
-                    height:    54,
+                    height: 54,
                     alignment: Alignment.center,
                     child: _isSubmitting
                         ? const SizedBox(
-                            width:  22,
+                            width: 22,
                             height: 22,
                             child: CircularProgressIndicator(
-                              color:       Colors.white,
+                              color: Colors.white,
                               strokeWidth: 2.5,
                             ),
                           )
                         : const Text(
                             AppStrings.submit,
                             style: TextStyle(
-                              fontSize:   16,
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color:      Colors.white,
+                              color: Colors.white,
                             ),
                           ),
                   ),
@@ -256,12 +257,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 // ── Account Type Card ─────────────────────────────────────────────────────────
 class _TypeCard extends StatelessWidget {
-  final IconData  icon;
-  final String    title;
-  final String    subtitle;
-  final bool      selected;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool selected;
   final VoidCallback onTap;
-  final bool      isDark;
+  final bool isDark;
 
   const _TypeCard({
     required this.icon,
@@ -278,13 +279,13 @@ class _TypeCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding:  const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color:        selected
-              ? AppColors.primaryPurple.withOpacity(0.12)
+          color: selected
+              ? AppColors.primaryPurple.withValues(alpha: 0.12)
               : (isDark ? AppColors.darkCard : AppColors.lightCard),
           borderRadius: BorderRadius.circular(16),
-          border:       Border.all(
+          border: Border.all(
             color: selected
                 ? AppColors.primaryPurple
                 : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
@@ -296,16 +297,16 @@ class _TypeCard extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color:  selected ? AppColors.primaryPurple : null,
-              size:   28,
+              color: selected ? AppColors.primaryPurple : null,
+              size: 28,
             ),
             const SizedBox(height: 10),
             Text(
               title,
               style: TextStyle(
-                fontSize:   14,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color:      selected
+                color: selected
                     ? AppColors.primaryPurple
                     : (isDark
                         ? AppColors.darkTextPrimary
@@ -317,7 +318,7 @@ class _TypeCard extends StatelessWidget {
               subtitle,
               style: TextStyle(
                 fontSize: 11,
-                color:    isDark
+                color: isDark
                     ? AppColors.darkTextSecondary
                     : AppColors.lightTextSecondary,
               ),
@@ -355,11 +356,11 @@ class _CorporateFields extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextFormField(
-          controller:  gstCtrl,
-          decoration:  const InputDecoration(
+          controller: gstCtrl,
+          decoration: const InputDecoration(
             labelText: AppStrings.gstLabel,
             prefixIcon: Icon(Icons.receipt_long_outlined),
-            hintText:  '22AAAAA0000A1Z5',
+            hintText: '22AAAAA0000A1Z5',
           ),
           textCapitalization: TextCapitalization.characters,
           inputFormatters: [
@@ -389,21 +390,21 @@ class _IndividualFields extends StatelessWidget {
     return Column(
       children: [
         TextFormField(
-          controller:         nameCtrl,
-          decoration: const   InputDecoration(
-            labelText:  AppStrings.fullName,
+          controller: nameCtrl,
+          decoration: const InputDecoration(
+            labelText: AppStrings.fullName,
             prefixIcon: Icon(Icons.person_outline_rounded),
           ),
           textCapitalization: TextCapitalization.words,
-          validator:          (v) => Validators.required(v, 'Full name'),
+          validator: (v) => Validators.required(v, 'Full name'),
         ),
         const SizedBox(height: 16),
         TextFormField(
-          controller:      aadharCtrl,
+          controller: aadharCtrl,
           decoration: const InputDecoration(
-            labelText:  AppStrings.aadharNumber,
+            labelText: AppStrings.aadharNumber,
             prefixIcon: Icon(Icons.credit_card_outlined),
-            hintText:   'XXXX XXXX XXXX',
+            hintText: 'XXXX XXXX XXXX',
           ),
           keyboardType: TextInputType.number,
           inputFormatters: [
@@ -419,10 +420,10 @@ class _IndividualFields extends StatelessWidget {
 
 // ── Document Upload Card ──────────────────────────────────────────────────────
 class _DocumentUploadCard extends StatelessWidget {
-  final String?      documentName;
-  final String       accountType;
+  final String? documentName;
+  final String accountType;
   final VoidCallback onTap;
-  final bool         isDark;
+  final bool isDark;
 
   const _DocumentUploadCard({
     required this.documentName,
@@ -440,10 +441,10 @@ class _DocumentUploadCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding:     const EdgeInsets.all(20),
-        decoration:  BoxDecoration(
-          color:        documentName != null
-              ? AppColors.primaryPurple.withOpacity(0.08)
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: documentName != null
+              ? AppColors.primaryPurple.withValues(alpha: 0.08)
               : (isDark ? AppColors.darkCard : AppColors.lightCard),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
@@ -456,14 +457,12 @@ class _DocumentUploadCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width:  48,
+              width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color:        documentName != null
-                    ? AppColors.primaryPurple.withOpacity(0.2)
-                    : (isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider),
+                color: documentName != null
+                    ? AppColors.primaryPurple.withValues(alpha: 0.2)
+                    : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -486,7 +485,7 @@ class _DocumentUploadCard extends StatelessWidget {
                     AppStrings.uploadProof,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize:   14,
+                      fontSize: 14,
                       color: isDark
                           ? AppColors.darkTextPrimary
                           : AppColors.lightTextPrimary,
@@ -497,14 +496,14 @@ class _DocumentUploadCard extends StatelessWidget {
                     documentName ?? hint,
                     style: TextStyle(
                       fontSize: 12,
-                      color:    documentName != null
+                      color: documentName != null
                           ? AppColors.primaryPurple
                           : (isDark
                               ? AppColors.darkTextSecondary
                               : AppColors.lightTextSecondary),
                     ),
-                    maxLines:  1,
-                    overflow:  TextOverflow.ellipsis,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

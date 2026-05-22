@@ -14,7 +14,6 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen>
     with AutomaticKeepAliveClientMixin {
-
   @override
   bool get wantKeepAlive => true;
 
@@ -29,7 +28,7 @@ class _HistoryScreenState extends State<HistoryScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final theme  = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
@@ -38,7 +37,7 @@ class _HistoryScreenState extends State<HistoryScreen>
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon:     const Icon(Icons.refresh_rounded),
+            icon: const Icon(Icons.refresh_rounded),
             onPressed: () =>
                 context.read<AdvertisementProvider>().fetchMyAdvertisements(),
           ),
@@ -60,14 +59,13 @@ class _HistoryScreenState extends State<HistoryScreen>
           }
 
           return RefreshIndicator(
-            color:    AppColors.primaryPurple,
+            color: AppColors.primaryPurple,
             onRefresh: provider.fetchMyAdvertisements,
             child: ListView.separated(
-              padding:     const EdgeInsets.all(20),
-              itemCount:   ads.length,
+              padding: const EdgeInsets.all(20),
+              itemCount: ads.length,
               separatorBuilder: (_, __) => const SizedBox(height: 14),
-              itemBuilder: (_, i) =>
-                  _AdHistoryCard(ad: ads[i], isDark: isDark),
+              itemBuilder: (_, i) => _AdHistoryCard(ad: ads[i], isDark: isDark),
             ),
           );
         },
@@ -79,25 +77,33 @@ class _HistoryScreenState extends State<HistoryScreen>
 // ── Ad History Card ───────────────────────────────────────────────────────────
 class _AdHistoryCard extends StatelessWidget {
   final Advertisement ad;
-  final bool          isDark;
+  final bool isDark;
 
   const _AdHistoryCard({required this.ad, required this.isDark});
 
   Color get _statusColor {
     switch (ad.status) {
-      case AdStatusType.pending:  return AppColors.statusPending;
-      case AdStatusType.approved: return AppColors.statusApproved;
-      case AdStatusType.rejected: return AppColors.statusRejected;
-      case AdStatusType.live:     return AppColors.statusLive;
+      case AdStatusType.pending:
+        return AppColors.statusPending;
+      case AdStatusType.approved:
+        return AppColors.statusApproved;
+      case AdStatusType.rejected:
+        return AppColors.statusRejected;
+      case AdStatusType.live:
+        return AppColors.statusLive;
     }
   }
 
   IconData get _statusIcon {
     switch (ad.status) {
-      case AdStatusType.pending:  return Icons.pending_actions_rounded;
-      case AdStatusType.approved: return Icons.check_circle_rounded;
-      case AdStatusType.rejected: return Icons.cancel_rounded;
-      case AdStatusType.live:     return Icons.live_tv_rounded;
+      case AdStatusType.pending:
+        return Icons.pending_actions_rounded;
+      case AdStatusType.approved:
+        return Icons.check_circle_rounded;
+      case AdStatusType.rejected:
+        return Icons.cancel_rounded;
+      case AdStatusType.live:
+        return Icons.live_tv_rounded;
     }
   }
 
@@ -107,18 +113,18 @@ class _AdHistoryCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+        color: isDark ? AppColors.darkCard : AppColors.lightCard,
         borderRadius: BorderRadius.circular(18),
-        border:       Border.all(
+        border: Border.all(
           color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
         ),
         boxShadow: [
           BoxShadow(
-            color:      isDark
-                ? Colors.black.withOpacity(0.2)
-                : AppColors.primaryPurple.withOpacity(0.06),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : AppColors.primaryPurple.withValues(alpha: 0.06),
             blurRadius: 12,
-            offset:     const Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -132,15 +138,16 @@ class _AdHistoryCard extends StatelessWidget {
               children: [
                 Image.network(
                   ad.mediaUrl,
-                  height:      140,
-                  width:       double.infinity,
-                  fit:         BoxFit.cover,
+                  height: 140,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(
                     height: 140,
-                    color:  isDark ? AppColors.darkDivider : AppColors.lightDivider,
+                    color:
+                        isDark ? AppColors.darkDivider : AppColors.lightDivider,
                     child: const Icon(
                       Icons.image_outlined,
-                      size:  40,
+                      size: 40,
                       color: AppColors.primaryPurple,
                     ),
                   ),
@@ -150,11 +157,11 @@ class _AdHistoryCard extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin:  Alignment.topCenter,
-                        end:    Alignment.bottomCenter,
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          Colors.black.withOpacity(0.45),
+                          Colors.black.withValues(alpha: 0.45),
                         ],
                       ),
                     ),
@@ -162,26 +169,25 @@ class _AdHistoryCard extends StatelessWidget {
                 ),
                 // Status badge
                 Positioned(
-                  top:   10,
+                  top: 10,
                   right: 10,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                     decoration: BoxDecoration(
-                      color:        _statusColor.withOpacity(0.9),
+                      color: _statusColor.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(_statusIcon,
-                            size: 13, color: Colors.white),
+                        Icon(_statusIcon, size: 13, color: Colors.white),
                         const SizedBox(width: 5),
                         Text(
                           ad.status.label,
                           style: const TextStyle(
-                            color:      Colors.white,
-                            fontSize:   11,
+                            color: Colors.white,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -191,13 +197,13 @@ class _AdHistoryCard extends StatelessWidget {
                 ),
                 // Media type
                 Positioned(
-                  top:  10,
+                  top: 10,
                   left: 10,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color:        Colors.black.withOpacity(0.6),
+                      color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
@@ -206,14 +212,14 @@ class _AdHistoryCard extends StatelessWidget {
                           ad.isImage
                               ? Icons.image_rounded
                               : Icons.videocam_rounded,
-                          size:  12,
+                          size: 12,
                           color: Colors.white,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           ad.isImage ? 'Image' : 'Video',
                           style: const TextStyle(
-                            color:   Colors.white,
+                            color: Colors.white,
                             fontSize: 11,
                           ),
                         ),
@@ -244,7 +250,7 @@ class _AdHistoryCard extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.location_on_rounded,
-                      size:  12,
+                      size: 12,
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
@@ -271,13 +277,13 @@ class _AdHistoryCard extends StatelessWidget {
                   children: [
                     _MiniStat(
                       label: '${ad.durationDays} Days',
-                      icon:  Icons.date_range_rounded,
+                      icon: Icons.date_range_rounded,
                       isDark: isDark,
                     ),
                     const SizedBox(width: 8),
                     _MiniStat(
                       label: '₹${ad.amountPaid.toStringAsFixed(0)}',
-                      icon:  Icons.currency_rupee_rounded,
+                      icon: Icons.currency_rupee_rounded,
                       isDark: isDark,
                     ),
                     const Spacer(),
@@ -297,10 +303,10 @@ class _AdHistoryCard extends StatelessWidget {
                     ad.rejectionReason != null) ...[
                   const SizedBox(height: 10),
                   Container(
-                    padding:    const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color:        AppColors.error.withOpacity(0.08),
+                      color: AppColors.error.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -312,7 +318,7 @@ class _AdHistoryCard extends StatelessWidget {
                           child: Text(
                             ad.rejectionReason!,
                             style: const TextStyle(
-                              color:    AppColors.error,
+                              color: AppColors.error,
                               fontSize: 12,
                             ),
                           ),
@@ -335,9 +341,9 @@ class _AdHistoryCard extends StatelessWidget {
 }
 
 class _MiniStat extends StatelessWidget {
-  final String   label;
+  final String label;
   final IconData icon;
-  final bool     isDark;
+  final bool isDark;
 
   const _MiniStat({
     required this.label,
@@ -350,7 +356,7 @@ class _MiniStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color:        isDark ? AppColors.darkDivider : AppColors.lightDivider,
+        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -361,9 +367,9 @@ class _MiniStat extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              fontSize:   11,
+              fontSize: 11,
               fontWeight: FontWeight.w600,
-              color:      AppColors.primaryPurple,
+              color: AppColors.primaryPurple,
             ),
           ),
         ],
@@ -386,15 +392,15 @@ class _EmptyHistory extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width:  100,
+              width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color:        AppColors.primaryPurple.withOpacity(0.1),
+                color: AppColors.primaryPurple.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: const Icon(
                 Icons.history_rounded,
-                size:  48,
+                size: 48,
                 color: AppColors.primaryPurple,
               ),
             ),
@@ -418,9 +424,8 @@ class _EmptyHistory extends StatelessWidget {
             ),
             const SizedBox(height: 28),
             ElevatedButton.icon(
-              onPressed: () => Navigator.pushReplacementNamed(
-                  context, '/home'),
-              icon:  const Icon(Icons.add_rounded),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+              icon: const Icon(Icons.add_rounded),
               label: const Text('Create Your First Ad'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryPurple,

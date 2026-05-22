@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _sendOtp() async {
     if (!_formKey.currentState!.validate()) return;
     final phone = _phoneCtrl.text.trim();
-    final auth  = context.read<AuthProvider>();
+    final auth = context.read<AuthProvider>();
 
     final success = await auth.sendOtp(phone);
     if (!mounted) return;
@@ -276,17 +276,17 @@ class _LoginScreenState extends State<LoginScreen>
 
   Widget _buildLogo(bool isDark) {
     return Container(
-      width:   140,
-      height:  140,
+      width: 140,
+      height: 140,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color:        Colors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color:      AppColors.primaryPurple.withOpacity(0.4),
+            color: AppColors.primaryPurple.withValues(alpha: 0.4),
             blurRadius: 20,
-            offset:     const Offset(0, 8),
+            offset: const Offset(0, 8),
           ),
         ],
       ),

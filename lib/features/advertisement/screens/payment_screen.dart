@@ -10,13 +10,13 @@ import '../../../providers/advertisement_provider.dart';
 import 'success_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final AdSlot  slot;
-  final String  title;
-  final String  description;
-  final File    mediaFile;
-  final String  mediaType;
-  final int     durationDays;
-  final double  totalAmount;
+  final AdSlot slot;
+  final String title;
+  final String description;
+  final File mediaFile;
+  final String mediaType;
+  final int durationDays;
+  final double totalAmount;
 
   const PaymentScreen({
     super.key,
@@ -34,16 +34,16 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final ApiService _api     = ApiService();
-  late Razorpay    _razorpay;
-  bool             _isLoading = false;
+  final ApiService _api = ApiService();
+  late Razorpay _razorpay;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _onPaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,   _onPaymentError);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _onPaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _onExternalWallet);
   }
 
@@ -59,11 +59,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
     try {
       // 1. Create order on backend
       final orderResponse = await _api.createOrder({
-        'amount':      (widget.totalAmount * 100).toInt(), // paise
-        'currency':    'INR',
-        'slot_id':     widget.slot.id,
-        'duration':    widget.durationDays,
-        'title':       widget.title,
+        'amount': (widget.totalAmount * 100).toInt(), // paise
+        'currency': 'INR',
+        'slot_id': widget.slot.id,
+        'duration': widget.durationDays,
+        'title': widget.title,
         'description': widget.description,
       });
 
@@ -71,15 +71,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       // 2. Open Razorpay checkout
       final options = {
-        'key':          'rzp_test_XXXXXXXXXXXXXX', // 🔧 Replace with your Razorpay key
-        'amount':       (widget.totalAmount * 100).toInt(),
-        'name':         AppStrings.appName,
-        'description':  widget.title,
-        'order_id':     orderId,
-        'currency':     'INR',
+        'key': 'rzp_test_XXXXXXXXXXXXXX', // 🔧 Replace with your Razorpay key
+        'amount': (widget.totalAmount * 100).toInt(),
+        'name': AppStrings.appName,
+        'description': widget.title,
+        'order_id': orderId,
+        'currency': 'INR',
         'prefill': {
           'contact': '',
-          'email':   '',
+          'email': '',
         },
         'theme': {
           'color': '#7C3AED',
@@ -98,20 +98,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
     try {
       // Verify payment on backend
       await _api.verifyPayment({
-        'razorpay_payment_id':  response.paymentId,
-        'razorpay_order_id':    response.orderId,
-        'razorpay_signature':   response.signature,
+        'razorpay_payment_id': response.paymentId,
+        'razorpay_order_id': response.orderId,
+        'razorpay_signature': response.signature,
       });
 
       // Upload the advertisement
       if (!mounted) return;
       final provider = context.read<AdvertisementProvider>();
-      final success  = await provider.createAdvertisement(
-        title:       widget.title,
+      final success = await provider.createAdvertisement(
+        title: widget.title,
         description: widget.description,
-        duration:    widget.durationDays.toString(),
-        media:       widget.mediaFile,
-        slotId:      widget.slot.id,
+        duration: widget.durationDays.toString(),
+        media: widget.mediaFile,
+        slotId: widget.slot.id,
       );
 
       if (!mounted) return;
@@ -122,8 +122,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
           context,
           MaterialPageRoute(
             builder: (_) => SuccessScreen(
-              slotName:     widget.slot.name,
-              amountPaid:   widget.totalAmount,
+              slotName: widget.slot.name,
+              amountPaid: widget.totalAmount,
               durationDays: widget.durationDays,
             ),
           ),
@@ -152,9 +152,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content:         Text(msg),
+        content: Text(msg),
         backgroundColor: AppColors.error,
-        behavior:        SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
@@ -163,14 +163,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
   // ── UI ────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final theme  = Theme.of(context);
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.payment),
         leading: IconButton(
-          icon:     const Icon(Icons.arrow_back_ios_rounded),
+          icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -190,12 +190,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
             // ── Summary Card ──────────────────────────────────────────
             Container(
-              padding:     const EdgeInsets.all(20),
-              decoration:  BoxDecoration(
-                color:        isDark ? AppColors.darkCard : AppColors.lightCard,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkCard : AppColors.lightCard,
                 borderRadius: BorderRadius.circular(20),
-                border:       Border.all(
-                  color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+                border: Border.all(
+                  color:
+                      isDark ? AppColors.darkDivider : AppColors.lightDivider,
                 ),
               ),
               child: Column(
@@ -232,15 +233,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   _OrderDivider(isDark: isDark),
                   _OrderRow(
                     label: 'Media Type',
-                    value: widget.mediaType == 'image' ? '🖼 Image' : '🎬 Video',
+                    value:
+                        widget.mediaType == 'image' ? '🖼 Image' : '🎬 Video',
                     isDark: isDark,
                   ),
                   _OrderDivider(isDark: isDark),
                   _OrderRow(
-                    label:       'Total Amount',
-                    value:       '₹${widget.totalAmount.toStringAsFixed(0)}',
-                    isDark:      isDark,
-                    isTotal:     true,
+                    label: 'Total Amount',
+                    value: '₹${widget.totalAmount.toStringAsFixed(0)}',
+                    isDark: isDark,
+                    isTotal: true,
                   ),
                 ],
               ),
@@ -249,23 +251,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
             // ── Approval Note ─────────────────────────────────────────
             Container(
-              padding:    const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color:        AppColors.warning.withOpacity(0.1),
+                color: AppColors.warning.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(14),
-                border:       Border.all(color: AppColors.warning.withOpacity(0.3)),
+                border:
+                    Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: AppColors.warning, size: 20),
+                  Icon(Icons.info_outline_rounded,
+                      color: AppColors.warning, size: 20),
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Your ad will be submitted for admin approval after payment. It will go live once approved.',
                       style: TextStyle(
-                        color:    AppColors.warning,
+                        color: AppColors.warning,
                         fontSize: 13,
-                        height:   1.5,
+                        height: 1.5,
                       ),
                     ),
                   ),
@@ -277,38 +281,39 @@ class _PaymentScreenState extends State<PaymentScreen> {
             // ── Pay Button ────────────────────────────────────────────
             ElevatedButton(
               onPressed: _isLoading ? null : _initiatePayment,
-              style:     ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+              style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
               child: Ink(
                 decoration: BoxDecoration(
-                  gradient:     _isLoading ? null : AppColors.primaryGradient,
-                  color:        _isLoading
+                  gradient: _isLoading ? null : AppColors.primaryGradient,
+                  color: _isLoading
                       ? (isDark ? AppColors.darkCard : AppColors.lightDivider)
                       : null,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Container(
-                  height:    58,
+                  height: 58,
                   alignment: Alignment.center,
                   child: _isLoading
                       ? const SizedBox(
-                          width:  22,
+                          width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
-                            color:       Colors.white,
+                            color: Colors.white,
                             strokeWidth: 2.5,
                           ),
                         )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.lock_rounded, color: Colors.white, size: 18),
+                            const Icon(Icons.lock_rounded,
+                                color: Colors.white, size: 18),
                             const SizedBox(width: 8),
                             Text(
                               '${AppStrings.payNow} · ₹${widget.totalAmount.toStringAsFixed(0)}',
                               style: const TextStyle(
-                                color:      Colors.white,
+                                color: Colors.white,
                                 fontWeight: FontWeight.w700,
-                                fontSize:   16,
+                                fontSize: 16,
                               ),
                             ),
                           ],
@@ -325,7 +330,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 children: [
                   Icon(
                     Icons.shield_rounded,
-                    size:  14,
+                    size: 14,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary,
@@ -355,8 +360,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 class _OrderRow extends StatelessWidget {
   final String label;
   final String value;
-  final bool   isDark;
-  final bool   isTotal;
+  final bool isDark;
+  final bool isTotal;
 
   const _OrderRow({
     required this.label,
@@ -385,9 +390,9 @@ class _OrderRow extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontSize:   isTotal ? 16 : 14,
+              fontSize: isTotal ? 16 : 14,
               fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
-              color:      isTotal
+              color: isTotal
                   ? AppColors.primaryPurple
                   : (isDark
                       ? AppColors.darkTextPrimary
@@ -406,8 +411,8 @@ class _OrderDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Divider(
-        color:     isDark ? AppColors.darkDivider : AppColors.lightDivider,
-        height:    1,
+        color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+        height: 1,
         thickness: 1,
       );
 }
